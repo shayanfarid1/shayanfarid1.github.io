@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Skills Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@rive-app/canvas@2.7.0"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        body[dir="rtl"] { font-family: 'Vazirmatn', sans-serif; }
+        
+        .skill-card {
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #2ea1ff 0%, #0e6cff 100%);
+        }
+        
+        .skill-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(46, 161, 255, 0.3);
+        }
+        
+        .expert-card {
+            background: linear-gradient(135deg, #2ea1ff 0%, #074bd1 100%);
+        }
+        
+        .beginner-card {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+        
+        .coming-soon-card {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            opacity: 0.8;
+        }
+        
+        .badge {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .hero-bg {
+            background: linear-gradient(135deg, #2ea1ff 0%, #0e6cff 50%, #074bd1 100%);
+        }
+        
+        .resume-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .resume-content {
+            background: #121212;
+            color: white;
+            max-width: 4xl;
+            margin: 2rem auto;
+            border-radius: 1rem;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .resume-header {
+            background: linear-gradient(135deg, #2ea1ff 0%, #0e6cff 50%, #074bd1 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen" style="background-color: #121212;">
+
+
+    <!-- Back Button -->
+    <div class="fixed top-6 left-6 z-50">
+        <button 
+            onclick="goBack()" 
+            class="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-lg flex items-center gap-2"
+            id="backButton"
+        >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            <span id="backButtonText">Back</span>
+        </button>
+    </div>
+
+    <!-- Language Toggle -->
+    <div class="fixed top-6 right-6 z-50">
+        <button 
+            onclick="toggleLanguage()" 
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-lg"
+            id="languageToggle"
+        >
+            فارسی
+        </button>
+    </div>
+
+    <!-- Skills Grid -->
+    <div class="container mx-auto px-6 py-16">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            
+            <!-- Figma - Expert -->
+            <div class="skill-card expert-card rounded-2xl p-8 text-white relative overflow-hidden cursor-pointer" onclick="openSkillModal('figma')">
+                <div class="badge absolute top-4 right-4 px-3 py-1 rounded-full text-sm font-medium">
+                    Expert
+                </div>
+                <div class="mb-6">
+                    <canvas class="w-32 h-16 mb-4" id="figmaRive"></canvas>
+                </div>
+                <h3 class="text-2xl font-bold mb-3">Figma</h3>
+                <p class="opacity-90 leading-relaxed">Advanced prototyping, design systems, and collaborative workflows. Creating pixel-perfect interfaces and interactive prototypes.</p>
+            </div>
+
+            <!-- Rive - Expert -->
+            <div class="skill-card expert-card rounded-2xl p-8 text-white relative overflow-hidden">
+                <div class="badge absolute top-4 right-4 px-3 py-1 rounded-full text-sm font-medium">
+                    Expert
+                </div>
+                <div class="mb-6">
+                    <canvas class="w-32 h-16 mb-4" id="riveRive"></canvas>
+                </div>
+                <h3 class="text-2xl font-bold mb-3">Rive</h3>
+                <p class="opacity-90 leading-relaxed">Interactive animations and state machines. Building engaging micro-interactions and complex animated experiences.</p>
+            </div>
+
+            <!-- Photoshop - Expert -->
+            <div class="skill-card expert-card rounded-2xl p-8 text-white relative overflow-hidden cursor-pointer" onclick="openSkillModal('photoshop')">
+                <div class="badge absolute top-4 right-4 px-3 py-1 rounded-full text-sm font-medium">
+                    Expert
+                </div>
+                <div class="mb-6">
+                    <canvas class="w-32 h-16 mb-4" id="photoshopRive"></canvas>
+                </div>
+                <h3 class="text-2xl font-bold mb-3">Photoshop</h3>
+                <p class="opacity-90 leading-relaxed">Advanced photo manipulation, digital art creation, and complex compositing. Mastering layers, masks, and advanced techniques.</p>
+            </div>
+
+            <!-- Spline - Beginner -->
+            <div class="skill-card beginner-card rounded-2xl p-8 text-gray-800 relative overflow-hidden cursor-pointer" onclick="openSkillModal('spline')">
+                <div class="badge absolute top-4 right-4 px-3 py-1 rounded-full text-sm font-medium bg-orange-200 text-orange-800">
+                    Beginner
+                </div>
+                <div class="mb-6">
+                    <canvas class="w-32 h-16 mb-4" id="splineRive"></canvas>
+                </div>
+                <h3 class="text-2xl font-bold mb-3">Spline</h3>
+                <p class="opacity-80 leading-relaxed">Learning 3D design and interactive web experiences. Exploring spatial design and real-time 3D workflows.</p>
+            </div>
+
+            <!-- Blender - Coming Soon -->
+            <div class="skill-card coming-soon-card rounded-2xl p-8 text-gray-700 relative overflow-hidden cursor-pointer" onclick="openSkillModal('blender')">
+                <div class="badge absolute top-4 right-4 px-3 py-1 rounded-full text-sm font-medium bg-blue-200 text-blue-800">
+                    Coming Soon
+                </div>
+                <div class="mb-6">
+                    <canvas class="w-32 h-16 mb-4 opacity-70" id="blenderRive"></canvas>
+                </div>
+                <h3 class="text-2xl font-bold mb-3">Blender</h3>
+                <p class="opacity-70 leading-relaxed">Planning to dive into 3D modeling, animation, and rendering. Expanding into comprehensive 3D creation workflows.</p>
+            </div>
+
+            <!-- Adobe Illustrator - Coming Soon -->
+            <div class="skill-card coming-soon-card rounded-2xl p-8 text-gray-700 relative overflow-hidden cursor-pointer" onclick="openSkillModal('illustrator')">
+                <div class="badge absolute top-4 right-4 px-3 py-1 rounded-full text-sm font-medium bg-blue-200 text-blue-800">
+                    Coming Soon
+                </div>
+                <div class="mb-6">
+                    <canvas class="w-32 h-16 mb-4 opacity-70" id="illustratorRive"></canvas>
+                </div>
+                <h3 class="text-2xl font-bold mb-3">Adobe Illustrator</h3>
+                <p class="opacity-70 leading-relaxed">Future focus on vector graphics, logo design, and scalable illustrations. Building expertise in precision vector workflows.</p>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Skill Detail Modal -->
+    <div id="skillModal" class="resume-modal">
+        <div class="resume-content max-w-2xl mx-auto my-8">
+            <!-- Skill Header -->
+            <div class="resume-header text-white p-6 rounded-t-xl relative">
+                <button onclick="closeSkillModal()" class="absolute top-4 right-4 text-white hover:text-gray-200 text-2xl font-bold">×</button>
+                <div class="text-center">
+                    <h1 id="skillTitle" class="text-3xl font-bold mb-2">Skill Details</h1>
+                    <p id="skillLevel" class="text-lg opacity-90">Expert Level</p>
+                </div>
+            </div>
+
+            <!-- Skill Body -->
+            <div class="p-6">
+                <div id="skillContent">
+                    <!-- Content will be dynamically loaded -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resume Modal -->
+    <div id="resumeModal" class="resume-modal">
+        <div class="resume-content max-w-4xl mx-auto my-8">
+            <!-- Resume Header -->
+            <div class="resume-header text-white p-8 rounded-t-xl relative">
+                <button onclick="closeResume()" class="absolute top-4 right-4 text-white hover:text-gray-200 text-2xl font-bold">×</button>
+                <div class="text-center">
+                    <h1 class="text-4xl font-bold mb-2">Alex Designer</h1>
+                    <p class="text-xl opacity-90">Creative Design Professional</p>
+                    <div class="flex justify-center space-x-6 mt-4 text-sm">
+                        <span>📧 alex@email.com</span>
+                        <span>📱 (555) 123-4567</span>
+                        <span>🌐 portfolio.com</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resume Body -->
+            <div class="p-8">
+                <!-- Professional Summary -->
+                <section class="mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b-2 border-blue-500 pb-2">Professional Summary</h2>
+                    <p class="text-gray-700 leading-relaxed">
+                        Creative design professional with expertise in digital design tools and interactive media. Specialized in user interface design, 
+                        interactive animations, and visual storytelling. Passionate about creating engaging user experiences through innovative design solutions.
+                    </p>
+                </section>
+
+                <!-- Skills -->
+                <section class="mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b-2 border-blue-500 pb-2">Technical Skills</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-2">Expert Level</h3>
+                            <ul class="space-y-1 text-gray-700">
+                                <li>• Figma - Advanced prototyping & design systems</li>
+                                <li>• Rive - Interactive animations & state machines</li>
+                                <li>• Photoshop - Digital art & photo manipulation</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-2">Learning & Development</h3>
+                            <ul class="space-y-1 text-gray-700">
+                                <li>• Spline - 3D design (Beginner)</li>
+                                <li>• Blender - 3D modeling (Coming Soon)</li>
+                                <li>• Adobe Illustrator - Vector graphics (Coming Soon)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Experience -->
+                <section class="mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b-2 border-blue-500 pb-2">Experience</h2>
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-800">Senior UI/UX Designer</h3>
+                            <p class="text-blue-600 font-medium">Creative Studio • 2022 - Present</p>
+                            <ul class="mt-2 space-y-1 text-gray-700">
+                                <li>• Led design system development using Figma for multiple client projects</li>
+                                <li>• Created interactive prototypes and micro-animations using Rive</li>
+                                <li>• Collaborated with development teams to implement pixel-perfect designs</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-800">Digital Designer</h3>
+                            <p class="text-blue-600 font-medium">Design Agency • 2020 - 2022</p>
+                            <ul class="mt-2 space-y-1 text-gray-700">
+                                <li>• Designed marketing materials and digital assets using Photoshop</li>
+                                <li>• Developed brand identities and visual guidelines</li>
+                                <li>• Managed multiple client projects simultaneously</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Education -->
+                <section class="mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b-2 border-blue-500 pb-2">Education</h2>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800">Bachelor of Fine Arts in Graphic Design</h3>
+                        <p class="text-blue-600 font-medium">Design University • 2016 - 2020</p>
+                        <p class="text-gray-700 mt-1">Graduated Magna Cum Laude • Focus on Digital Media & Interactive Design</p>
+                    </div>
+                </section>
+
+                <!-- Projects -->
+                <section>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b-2 border-blue-500 pb-2">Notable Projects</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h3 class="font-semibold text-gray-800 mb-2">Interactive Dashboard Design</h3>
+                            <p class="text-gray-700 text-sm">Created comprehensive design system and interactive prototypes for SaaS platform using Figma and Rive animations.</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h3 class="font-semibold text-gray-800 mb-2">Brand Identity Package</h3>
+                            <p class="text-gray-700 text-sm">Developed complete visual identity including logo, color palette, and marketing materials using Photoshop and design principles.</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentLanguage = 'en';
+        
+        const translations = {
+            en: {
+                languageToggle: 'فارسی',
+                expert: 'Expert',
+                beginner: 'Beginner',
+                comingSoon: 'Coming Soon',
+                about: 'About',
+                experience: 'Experience',
+                keyProjects: 'Key Projects',
+                achievements: 'Achievements',
+                viewProject: 'View Project',
+                openProject: 'Open Project',
+                back: 'Back'
+            },
+            fa: {
+                languageToggle: 'English',
+                expert: 'متخصص',
+                beginner: 'مبتدی',
+                comingSoon: 'به زودی',
+                about: 'درباره',
+                experience: 'تجربه',
+                keyProjects: 'پروژه‌های کلیدی',
+                achievements: 'دستاوردها',
+                viewProject: 'مشاهده پروژه',
+                openProject: 'باز کردن پروژه',
+                back: 'بازگشت'
+            }
+        };
+
+        const skillData = {
+            figma: {
+                en: {
+                    title: 'Figma',
+                    level: 'Expert Level',
+                    description: 'Advanced UI/UX design and prototyping platform',
+                    projects: [
+                        'E-commerce Dashboard - Complete design system with 50+ components',
+                        'Mobile Banking App - Interactive prototype with micro-animations',
+                        'SaaS Platform Redesign - User research to final implementation'
+                    ],
+                    experience: '4+ years of professional experience',
+                    achievements: [
+                        'Led design system adoption across 3 product teams',
+                        'Reduced design-to-development handoff time by 60%',
+                        'Created reusable component library used by 15+ designers'
+                    ]
+                },
+                fa: {
+                    title: 'فیگما',
+                    level: 'سطح متخصص',
+                    description: 'پلتفرم پیشرفته طراحی UI/UX و نمونه‌سازی',
+                    projects: [
+                        'داشبورد فروشگاهی - سیستم طراحی کامل با بیش از ۵۰ کامپوننت',
+                        'اپلیکیشن بانکی موبایل - نمونه تعاملی با انیمیشن‌های ریز',
+                        'بازطراحی پلتفرم SaaS - از تحقیق کاربر تا پیاده‌سازی نهایی'
+                    ],
+                    experience: 'بیش از ۴ سال تجربه حرفه‌ای',
+                    achievements: [
+                        'رهبری پذیرش سیستم طراحی در ۳ تیم محصول',
+                        'کاهش ۶۰٪ زمان انتقال از طراحی به توسعه',
+                        'ایجاد کتابخانه کامپوننت قابل استفاده مجدد توسط ۱۵+ طراح'
+                    ]
+                }
+            },
+
+            photoshop: {
+                en: {
+                    title: 'Photoshop',
+                    level: 'Expert Level',
+                    description: 'Digital art creation and photo manipulation',
+                    projects: [
+                        'Brand Photography - Product shots and marketing materials',
+                        'Digital Illustrations - Custom artwork for web and print',
+                        'Social Media Content - Engaging visual content creation'
+                    ],
+                    experience: '6+ years of digital design experience',
+                    achievements: [
+                        'Created visual identity for 20+ brands',
+                        'Mastered advanced compositing and retouching techniques',
+                        'Developed efficient workflow reducing editing time by 50%'
+                    ]
+                },
+                fa: {
+                    title: 'فتوشاپ',
+                    level: 'سطح متخصص',
+                    description: 'ایجاد هنر دیجیتال و دستکاری عکس',
+                    projects: [
+                        'عکاسی برند - عکس‌های محصول و مواد بازاریابی',
+                        'تصاویر دیجیتال - آثار هنری سفارشی برای وب و چاپ',
+                        'محتوای شبکه‌های اجتماعی - ایجاد محتوای بصری جذاب'
+                    ],
+                    experience: 'بیش از ۶ سال تجربه طراحی دیجیتال',
+                    achievements: [
+                        'ایجاد هویت بصری برای بیش از ۲۰ برند',
+                        'تسلط بر تکنیک‌های پیشرفته ترکیب و روتوش',
+                        'توسعه گردکار کارآمد با کاهش ۵۰٪ زمان ویرایش'
+                    ]
+                }
+            },
+            spline: {
+                en: {
+                    title: 'Spline',
+                    level: 'Beginner Level',
+                    description: '3D design and interactive web experiences',
+                    projects: [
+                        'Product Showcase - 3D product visualization for e-commerce',
+                        'Interactive Landing Page - 3D elements for web engagement',
+                        'Learning Projects - Exploring 3D design fundamentals'
+                    ],
+                    experience: '6 months of learning and experimentation',
+                    achievements: [
+                        'Completed 10+ 3D design tutorials',
+                        'Created first interactive 3D web component',
+                        'Learning advanced lighting and material techniques'
+                    ]
+                },
+                fa: {
+                    title: 'اسپلاین',
+                    level: 'سطح مبتدی',
+                    description: 'طراحی سه‌بعدی و تجربیات تعاملی وب',
+                    projects: [
+                        'نمایش محصول - تجسم سه‌بعدی محصول برای فروشگاه الکترونیکی',
+                        'صفحه فرود تعاملی - عناصر سه‌بعدی برای تعامل وب',
+                        'پروژه‌های یادگیری - کاوش در اصول طراحی سه‌بعدی'
+                    ],
+                    experience: '۶ ماه یادگیری و آزمایش',
+                    achievements: [
+                        'تکمیل بیش از ۱۰ آموزش طراحی سه‌بعدی',
+                        'ایجاد اولین کامپوننت وب سه‌بعدی تعاملی',
+                        'یادگیری تکنیک‌های پیشرفته نورپردازی و متریال'
+                    ]
+                }
+            },
+            blender: {
+                en: {
+                    title: 'Blender',
+                    level: 'Coming Soon',
+                    description: '3D modeling, animation, and rendering',
+                    projects: [
+                        'Planned: Character modeling for game assets',
+                        'Planned: Architectural visualization projects',
+                        'Planned: Motion graphics and animations'
+                    ],
+                    experience: 'Starting learning journey in 2024',
+                    achievements: [
+                        'Researching best learning resources',
+                        'Planning structured learning path',
+                        'Setting up development environment'
+                    ]
+                },
+                fa: {
+                    title: 'بلندر',
+                    level: 'به زودی',
+                    description: 'مدل‌سازی سه‌بعدی، انیمیشن و رندرینگ',
+                    projects: [
+                        'برنامه‌ریزی شده: مدل‌سازی کاراکتر برای دارایی‌های بازی',
+                        'برنامه‌ریزی شده: پروژه‌های تجسم معماری',
+                        'برنامه‌ریزی شده: گرافیک متحرک و انیمیشن‌ها'
+                    ],
+                    experience: 'شروع سفر یادگیری در ۲۰۲۴',
+                    achievements: [
+                        'تحقیق در بهترین منابع یادگیری',
+                        'برنامه‌ریزی مسیر یادگیری ساختاریافته',
+                        'راه‌اندازی محیط توسعه'
+                    ]
+                }
+            },
+            illustrator: {
+                en: {
+                    title: 'Adobe Illustrator',
+                    level: 'Coming Soon',
+                    description: 'Vector graphics and scalable design',
+                    projects: [
+                        'Planned: Logo design and brand identity work',
+                        'Planned: Icon sets and illustration libraries',
+                        'Planned: Print design and packaging'
+                    ],
+                    experience: 'Adding to skillset in 2024',
+                    achievements: [
+                        'Identified key learning objectives',
+                        'Planned integration with existing workflow',
+                        'Researching advanced vector techniques'
+                    ]
+                },
+                fa: {
+                    title: 'ادوبی ایلاستریتور',
+                    level: 'به زودی',
+                    description: 'گرافیک برداری و طراحی مقیاس‌پذیر',
+                    projects: [
+                        'برنامه‌ریزی شده: طراحی لوگو و کار هویت برند',
+                        'برنامه‌ریزی شده: مجموعه آیکون و کتابخانه تصاویر',
+                        'برنامه‌ریزی شده: طراحی چاپ و بسته‌بندی'
+                    ],
+                    experience: 'افزودن به مجموعه مهارت‌ها در ۲۰۲۴',
+                    achievements: [
+                        'شناسایی اهداف کلیدی یادگیری',
+                        'برنامه‌ریزی ادغام با گردکار موجود',
+                        'تحقیق در تکنیک‌های پیشرفته برداری'
+                    ]
+                }
+            }
+        };
+
+        function openSkillModal(skill) {
+            const skillInfo = skillData[skill];
+            if (!skillInfo) return;
+
+            const data = skillInfo[currentLanguage];
+            const t = translations[currentLanguage];
+
+            document.getElementById('skillTitle').textContent = data.title;
+            document.getElementById('skillLevel').textContent = data.level;
+            
+            let content = `
+                <div class="space-y-6" ${currentLanguage === 'fa' ? 'dir="rtl" style="text-align: right;"' : 'dir="ltr" style="text-align: left;"'}>
+                    <section>
+                        <h3 class="text-xl font-semibold text-white mb-3">${t.about}</h3>
+                        <p class="text-gray-300">${data.description}</p>
+                    </section>
+                    
+                    <section>
+                        <h3 class="text-xl font-semibold text-white mb-3">${t.experience}</h3>
+                        <p class="text-gray-300">${data.experience}</p>
+                    </section>
+                    
+                    <section>
+                        <h3 class="text-xl font-semibold text-white mb-3">${t.keyProjects}</h3>
+                        <ul class="space-y-2">
+                            ${data.projects.map(project => `<li class="text-gray-300">• ${project}</li>`).join('')}
+                        </ul>
+                    </section>
+                    
+                    <section>
+                        <h3 class="text-xl font-semibold text-white mb-3">${t.achievements}</h3>
+                        <ul class="space-y-2">
+                            ${data.achievements.map(achievement => `<li class="text-gray-300">• ${achievement}</li>`).join('')}
+                        </ul>
+                    </section>
+            `;
+            
+
+            
+            // Add project link for Spline only
+            if (skill === 'spline') {
+                const splineUrl = 'https://my.spline.design/untitled-rV2KoEzNmFVHfQTpE9LW2bD6/';
+                content += `
+                    <section>
+                        <h3 class="text-xl font-semibold text-white mb-3">${t.viewProject}</h3>
+                        <button 
+                            onclick="window.open('${splineUrl}', '_blank')" 
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
+                        >
+                            ${t.openProject}
+                        </button>
+                    </section>
+                `;
+            }
+            
+            content += `</div>`;
+            
+            document.getElementById('skillContent').innerHTML = content;
+            document.getElementById('skillModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSkillModal() {
+            document.getElementById('skillModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'en' ? 'fa' : 'en';
+            document.getElementById('languageToggle').textContent = translations[currentLanguage].languageToggle;
+            document.getElementById('backButtonText').textContent = translations[currentLanguage].back;
+            
+            // Update body direction and font for RTL/LTR
+            document.body.dir = currentLanguage === 'fa' ? 'rtl' : 'ltr';
+            
+            // Update skill card badges
+            updateSkillCardBadges();
+            
+            // Update skill card content
+            updateSkillCards();
+        }
+
+        function updateSkillCardBadges() {
+            const badges = document.querySelectorAll('.badge');
+            const t = translations[currentLanguage];
+            
+            badges.forEach((badge, index) => {
+                if (index === 0 || index === 2) { // Figma and Photoshop
+                    badge.textContent = t.expert;
+                } else if (index === 1) { // Rive
+                    badge.textContent = t.expert;
+                } else if (index === 3) { // Spline
+                    badge.textContent = t.beginner;
+                } else { // Blender and Illustrator
+                    badge.textContent = t.comingSoon;
+                }
+            });
+        }
+
+        function updateSkillCards() {
+            const skillCards = document.querySelectorAll('.skill-card');
+            const skillNames = ['figma', 'rive', 'photoshop', 'spline', 'blender', 'illustrator'];
+            
+            skillCards.forEach((card, index) => {
+                const skillName = skillNames[index];
+                const title = card.querySelector('h3');
+                const description = card.querySelector('p');
+                
+                if (skillName === 'figma') {
+                    title.textContent = currentLanguage === 'fa' ? 'فیگما' : 'Figma';
+                    description.textContent = currentLanguage === 'fa' ? 
+                        'نمونه‌سازی پیشرفته، سیستم‌های طراحی و گردکارهای مشارکتی. ایجاد رابط‌های کاربری دقیق و نمونه‌های تعاملی.' :
+                        'Advanced prototyping, design systems, and collaborative workflows. Creating pixel-perfect interfaces and interactive prototypes.';
+                } else if (skillName === 'rive') {
+                    title.textContent = currentLanguage === 'fa' ? 'رایو' : 'Rive';
+                    description.textContent = currentLanguage === 'fa' ? 
+                        'انیمیشن‌های تعاملی و ماشین‌های حالت. ساخت تعاملات ریز جذاب و تجربیات انیمیشنی پیچیده.' :
+                        'Interactive animations and state machines. Building engaging micro-interactions and complex animated experiences.';
+                } else if (skillName === 'photoshop') {
+                    title.textContent = currentLanguage === 'fa' ? 'فتوشاپ' : 'Photoshop';
+                    description.textContent = currentLanguage === 'fa' ? 
+                        'دستکاری پیشرفته عکس، ایجاد هنر دیجیتال و ترکیب‌بندی پیچیده. تسلط بر لایه‌ها، ماسک‌ها و تکنیک‌های پیشرفته.' :
+                        'Advanced photo manipulation, digital art creation, and complex compositing. Mastering layers, masks, and advanced techniques.';
+                } else if (skillName === 'spline') {
+                    title.textContent = currentLanguage === 'fa' ? 'اسپلاین' : 'Spline';
+                    description.textContent = currentLanguage === 'fa' ? 
+                        'یادگیری طراحی سه‌بعدی و تجربیات تعاملی وب. کاوش در طراحی فضایی و گردکارهای سه‌بعدی بلادرنگ.' :
+                        'Learning 3D design and interactive web experiences. Exploring spatial design and real-time 3D workflows.';
+                } else if (skillName === 'blender') {
+                    title.textContent = currentLanguage === 'fa' ? 'بلندر' : 'Blender';
+                    description.textContent = currentLanguage === 'fa' ? 
+                        'برنامه‌ریزی برای ورود به مدل‌سازی سه‌بعدی، انیمیشن و رندرینگ. گسترش به گردکارهای جامع ایجاد سه‌بعدی.' :
+                        'Planning to dive into 3D modeling, animation, and rendering. Expanding into comprehensive 3D creation workflows.';
+                } else if (skillName === 'illustrator') {
+                    title.textContent = currentLanguage === 'fa' ? 'ادوبی ایلاستریتور' : 'Adobe Illustrator';
+                    description.textContent = currentLanguage === 'fa' ? 
+                        'تمرکز آینده بر گرافیک برداری، طراحی لوگو و تصاویر مقیاس‌پذیر. ساخت تخصص در گردکارهای برداری دقیق.' :
+                        'Future focus on vector graphics, logo design, and scalable illustrations. Building expertise in precision vector workflows.';
+                }
+            });
+        }
+
+
+
+
+
+        function openResume() {
+            document.getElementById('resumeModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeResume() {
+            document.getElementById('resumeModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modals when clicking outside
+        document.getElementById('skillModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSkillModal();
+            }
+        });
+
+        document.getElementById('resumeModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeResume();
+            }
+        });
+
+        // Close modals with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeSkillModal();
+                closeResume();
+            }
+        });
+
+        // Initialize Rive animations when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Note: Replace these URLs with your actual .riv file URLs
+            const riveFiles = {
+                figma: 'figma.riv', // Replace with your Figma .riv file
+                rive: 'rive.riv', // Replace with your Rive .riv file
+                photoshop: 'photoshop.riv', // Replace with your Photoshop .riv file
+                spline: 'spline.riv', // Replace with your Spline .riv file
+                blender: 'blender.riv', // Replace with your Blender .riv file
+                illustrator: 'illustraitor.riv' // Replace with your Illustrator .riv file
+            };
+
+            // Initialize each Rive animation
+            Object.keys(riveFiles).forEach(skill => {
+                const canvas = document.getElementById(skill + 'Rive');
+                if (canvas) {
+                    try {
+                        new rive.Rive({
+                            src: riveFiles[skill],
+                            canvas: canvas,
+                            autoplay: true,
+                            stateMachines: 'State Machine 1', // Adjust based on your Rive file
+                            onLoad: () => {
+                                console.log(`${skill} Rive animation loaded successfully`);
+                            },
+                            onLoadError: (error) => {
+                                console.error(`Error loading ${skill} Rive animation:`, error);
+                                // Fallback: show a simple colored circle
+                                const ctx = canvas.getContext('2d');
+                                ctx.fillStyle = '#2ea1ff';
+                                ctx.beginPath();
+                                ctx.arc(64, 32, 24, 0, 2 * Math.PI);
+                                ctx.fill();
+                            }
+                        });
+                    } catch (error) {
+                        console.error(`Error initializing ${skill} Rive:`, error);
+                        // Fallback: show a simple colored circle
+                        const ctx = canvas.getContext('2d');
+                        ctx.fillStyle = '#2ea1ff';
+                        ctx.beginPath();
+                        ctx.arc(64, 32, 24, 0, 2 * Math.PI);
+                        ctx.fill();
+                    }
+                }
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97f452ef54b348af',t:'MTc1Nzg5OTQ2MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

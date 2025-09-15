@@ -1,0 +1,1588 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>IconCraft — World's First Premium Icon Marketplace</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@rive-app/canvas@2.7.0"></script>
+
+<style>
+  :root{
+    --bg-very-dark: #03060a;
+    --panel-padding: 36px;
+    --corner-offset: 6px;
+    --primary-blue: #2ea1ff;
+    --secondary-blue: #0e6cff;
+    --dark-blue: #074bd1;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior: smooth;}
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(3,6,10,0.8);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--primary-blue), var(--secondary-blue));
+    border-radius: 4px;
+    transition: all 0.3s ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--secondary-blue), var(--dark-blue));
+    box-shadow: 0 0 10px rgba(46,161,255,0.5);
+  }
+
+  /* Firefox scrollbar */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-blue) rgba(3,6,10,0.8);
+  }
+  body{
+    font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background:
+      radial-gradient(1200px 600px at 50% 20%, rgba(6,32,45,0.55), transparent 20%),
+      radial-gradient(600px 400px at 15% 80%, rgba(0,50,80,0.27), transparent 20%),
+      linear-gradient(180deg, #02060a 0%, #05070b 35%, #03050a 100%);
+    color: #fff;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Animated background glow effects */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+      radial-gradient(1400px 700px at var(--glow-x, 20%) var(--glow-y, 30%), rgba(46,161,255,0.06), transparent 80%),
+      radial-gradient(1100px 550px at var(--glow2-x, 80%) var(--glow2-y, 70%), rgba(14,108,255,0.04), transparent 80%),
+      radial-gradient(900px 450px at var(--glow3-x, 60%) var(--glow3-y, 20%), rgba(116,185,255,0.03), transparent 80%);
+    pointer-events: none;
+    z-index: -1;
+    will-change: transform;
+
+  }
+
+  @keyframes glowMove1 {
+    0% { 
+      --glow-x: 15%; 
+      --glow-y: 25%; 
+    }
+    20% { 
+      --glow-x: 35%; 
+      --glow-y: 15%; 
+    }
+    40% { 
+      --glow-x: 75%; 
+      --glow-y: 35%; 
+    }
+    60% { 
+      --glow-x: 85%; 
+      --glow-y: 75%; 
+    }
+    80% { 
+      --glow-x: 25%; 
+      --glow-y: 85%; 
+    }
+    100% { 
+      --glow-x: 15%; 
+      --glow-y: 25%; 
+    }
+  }
+
+  @keyframes glowMove2 {
+    0% { 
+      --glow2-x: 85%; 
+      --glow2-y: 75%; 
+    }
+    20% { 
+      --glow2-x: 65%; 
+      --glow2-y: 15%; 
+    }
+    40% { 
+      --glow2-x: 25%; 
+      --glow2-y: 25%; 
+    }
+    60% { 
+      --glow2-x: 15%; 
+      --glow2-y: 65%; 
+    }
+    80% { 
+      --glow2-x: 75%; 
+      --glow2-y: 85%; 
+    }
+    100% { 
+      --glow2-x: 85%; 
+      --glow2-y: 75%; 
+    }
+  }
+
+  @keyframes glowMove3 {
+    0% { 
+      --glow3-x: 55%; 
+      --glow3-y: 15%; 
+    }
+    20% { 
+      --glow3-x: 25%; 
+      --glow3-y: 35%; 
+    }
+    40% { 
+      --glow3-x: 15%; 
+      --glow3-y: 75%; 
+    }
+    60% { 
+      --glow3-x: 65%; 
+      --glow3-y: 85%; 
+    }
+    80% { 
+      --glow3-x: 85%; 
+      --glow3-y: 45%; 
+    }
+    100% { 
+      --glow3-x: 55%; 
+      --glow3-y: 15%; 
+    }
+  }
+
+  /* Navigation */
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 800px;
+    padding: 12px 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(25px);
+    background: Dribbblergba(3,6,10,0.85);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 50px;
+    z-index: 100;
+    transition: all 0.4s ease;
+    margin-top: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.144);
+    animation: navSlideDown 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes navSlideDown {
+    0% {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-100px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  }
+
+  .nav.scrolled {
+    padding: 10px 25px;
+    background: rgba(3,6,10,0.92);
+    backdrop-filter: blur(30px);
+    margin-top: 10px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--primary-blue);
+    text-shadow: 0 0 20px rgba(46,161,255,0.5);
+    position: absolute;
+    left: 30px;
+  }
+
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+    transition: all 0.3s ease;
+  }
+
+  .logo:hover .logo-icon {
+    transform: scale(1.1) rotate(5deg);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 25px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 8px 12px;
+    border-radius: 20px;
+  }
+
+  .nav-links a::before {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-blue), var(--secondary-blue));
+    border-radius: 1px;
+    transition: width 0.3s ease;
+  }
+
+  .nav-links a:hover {
+    color: white;
+  }
+
+  .nav-links a:hover::before {
+    width: 80%;
+  }
+
+  .nav-links a.active {
+    color: white;
+  }
+
+  .nav-links a.active::before {
+    width: 0;
+  }
+
+  .nav.at-top {
+    border: 1px solid transparent;
+    background: transparent;
+    backdrop-filter: none;
+  }
+
+  .mobile-menu {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+  }
+
+  .mobile-menu span {
+    width: 25px;
+    height: 3px;
+    background: white;
+    margin: 3px 0;
+    transition: 0.3s;
+  }
+
+
+
+  .highlight {
+    background: linear-gradient(45deg, #074bd1, #0e6cff, #2ea1ff, #54a0ff, #74b9ff);
+    background-size: 400% 400%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 3s ease-in-out infinite;
+    position: relative;
+    display: inline-block;
+  }
+
+  .highlight::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: linear-gradient(45deg, #074bd1, #0e6cff, #2ea1ff, #54a0ff, #74b9ff);
+    background-size: 400% 400%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 3s ease-in-out infinite;
+    filter: blur(8px);
+    opacity: 0.3;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  /* Cursor Glow Effect */
+  .glow-container {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .glow-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(300px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+      rgba(46,161,255,0.15), 
+      rgba(46,161,255,0.08) 40%, 
+      transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+    border-radius: inherit;
+  }
+
+  .glow-container:hover::before {
+    opacity: 1;
+  }
+
+  .glow-container > * {
+    position: relative;
+    z-index: 2;
+  }
+
+
+
+  .section-title {
+    text-align: center;
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    opacity: 0;
+    transform: translateY(50px) scale(0.9);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .section-title.animate {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .section-subtitle {
+    text-align: center;
+    color: rgba(180,190,200,0.7);
+    font-size: 18px;
+    max-width: 600px;
+    margin: 0 auto;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    transition-delay: 0.2s;
+  }
+
+  .section-subtitle.animate {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Social Contact Page */
+  .social-page {
+    padding: 120px 24px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .social-hero {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  .social-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    margin-top: 60px;
+  }
+
+  .social-card {
+    background: linear-gradient(135deg, rgba(15,25,35,0.8), rgba(8,15,25,0.9));
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 40px 30px;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(50px) scale(0.8);
+    animation: socialCardSlideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .social-card:nth-child(1) { animation-delay: 0.1s; }
+  .social-card:nth-child(2) { animation-delay: 0.2s; }
+  .social-card:nth-child(3) { animation-delay: 0.3s; }
+  .social-card:nth-child(4) { animation-delay: 0.4s; }
+  .social-card:nth-child(5) { animation-delay: 0.5s; }
+  .social-card:nth-child(6) { animation-delay: 0.6s; }
+
+  @keyframes socialCardSlideIn {
+    0% {
+      opacity: 0;
+      transform: translateY(50px) scale(0.8);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .social-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+      rgba(46,161,255,0.15), 
+      rgba(46,161,255,0.08) 40%, 
+      transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 0;
+  }
+
+  .social-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .social-card:hover {
+    transform: translateY(-15px) scale(1.02);
+    box-shadow: 
+      0 25px 60px rgba(46,161,255,0.3),
+      0 0 40px rgba(46,161,255,0.15),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+    border-color: rgba(46,161,255,0.4);
+  }
+
+  .social-card:hover::before {
+    opacity: 1;
+  }
+
+  /* Platform-specific colors */
+  .social-card.twitter:hover {
+    border-color: #1f1f1f;
+    box-shadow: 
+      0 25px 60px rgba(0, 0, 0, 0.3),
+      0 0 40px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(189, 189, 189, 0.1);
+  }
+
+  .social-card.instagram:hover {
+    border-color: #E4405F;
+    box-shadow: 
+      0 25px 60px rgba(228,64,95,0.3),
+      0 0 40px rgba(228,64,95,0.15),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+
+  .social-card.linkedin:hover {
+    border-color: #0077B5;
+    box-shadow: 
+      0 25px 60px rgba(0,119,181,0.3),
+      0 0 40px rgba(0,119,181,0.15),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+
+  .social-card.dribbble:hover {
+    border-color: #EA4C89;
+    box-shadow: 
+      0 25px 60px rgba(234,76,137,0.3),
+      0 0 40px rgba(234,76,137,0.15),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+
+  .social-card.youtube:hover {
+    border-color: #FF0000;
+    box-shadow: 
+      0 25px 60px rgba(255,0,0,0.3),
+      0 0 40px rgba(255,0,0,0.15),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+
+  .social-card.discord:hover {
+    border-color: #5865F2;
+    box-shadow: 
+      0 25px 60px rgba(88,101,242,0.3),
+      0 0 40px rgba(88,101,242,0.15),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+
+  .social-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 25px;
+    background: linear-gradient(135deg, rgba(46,161,255,0.2), rgba(14,108,255,0.1));
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .social-icon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.6s ease;
+  }
+
+  .social-card:hover .social-icon {
+    transform: scale(1.1);
+    background: linear-gradient(135deg, rgba(46,161,255,0.4), rgba(14,108,255,0.3));
+    box-shadow: 0 10px 30px rgba(46,161,255,0.3);
+  }
+
+  .social-card:hover .social-icon::before {
+    left: 100%;
+  }
+
+  .social-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: white;
+  }
+
+  .social-handle {
+    font-size: 18px;
+    color: var(--primary-blue);
+    margin-bottom: 15px;
+    font-weight: 600;
+  }
+
+  .social-desc {
+    color: rgba(255,255,255,0.8);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .social-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 25px;
+    padding: 20px 0;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .social-stat {
+    text-align: center;
+  }
+
+  .social-stat-number {
+    display: block;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--primary-blue);
+    text-shadow: 0 0 15px rgba(46,161,255,0.5);
+    animation: socialStatGlow 4s ease-in-out infinite;
+  }
+
+  @keyframes socialStatGlow {
+    0%, 100% {
+      text-shadow: 0 0 15px rgba(46,161,255,0.5);
+    }
+    50% {
+      text-shadow: 0 0 25px rgba(46,161,255,0.8), 0 0 35px rgba(46,161,255,0.3);
+    }
+  }
+
+  .social-stat-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 5px;
+  }
+
+  .social-btn {
+    width: 100%;
+    padding: 12px 24px;
+    background: var(--primary-blue);
+    border: none;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .social-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .social-btn:hover {
+    background: var(--secondary-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(46,161,255,0.4);
+  }
+
+  .social-btn:hover::before {
+    left: 100%;
+  }
+
+  /* Community Section */
+  .community-section {
+    margin: 80px 0;
+    text-align: center;
+  }
+
+  .community-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 20px;
+  }
+
+  .community-subtitle {
+    color: rgba(255,255,255,0.8);
+    font-size: 18px;
+    margin-bottom: 50px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .community-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+  }
+
+  .community-card {
+    background: linear-gradient(135deg, rgba(15,25,35,0.6), rgba(8,15,25,0.8));
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 30px 25px;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .community-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+      rgba(46,161,255,0.15), 
+      rgba(46,161,255,0.08) 40%, 
+      transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 0;
+  }
+
+  .community-card:hover::before {
+    opacity: 1;
+  }
+
+  .community-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .community-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(46,161,255,0.2);
+    border-color: rgba(46,161,255,0.3);
+  }
+
+  .community-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .community-card h4 {
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+  }
+
+  .community-card p {
+    color: rgba(255,255,255,0.8);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .community-number {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--primary-blue);
+    display: block;
+    text-shadow: 0 0 15px rgba(46,161,255,0.5);
+    animation: communityGlow 4s ease-in-out infinite;
+  }
+
+  @keyframes communityGlow {
+    0%, 100% {
+      text-shadow: 0 0 15px rgba(46,161,255,0.5);
+    }
+    50% {
+      text-shadow: 0 0 25px rgba(46,161,255,0.8), 0 0 35px rgba(46,161,255,0.3);
+    }
+  }
+
+
+
+
+
+
+
+  /* Footer */
+  .footer {
+    background: rgba(3,6,10,0.9);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding: 60px 24px 30px;
+    margin-top: 100px;
+  }
+
+  .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+  }
+
+  .footer-section h4 {
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  .footer-section p, .footer-section a {
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    line-height: 1.6;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .footer-section a:hover {
+    color: var(--primary-blue);
+  }
+
+  .footer-bottom {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 20px;
+    color: rgba(255, 255, 255, 0.082);
+  }
+
+  /* Modal */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal.active {
+    display: flex;
+  }
+
+  .modal-content {
+    background: linear-gradient(135deg, rgba(15,25,35,0.95), rgba(8,15,25,0.98));
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    position: relative;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.7);
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  .modal-close:hover {
+    color: white;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .nav {
+      padding: 12px 20px;
+      width: 95%;
+      border-radius: 40px;
+    }
+    
+    .nav.scrolled {
+      padding: 10px 18px;
+    }
+    
+    .nav-links {
+      display: none;
+      position: absolute;
+      top: calc(100% + 10px);
+      left: 0;
+      width: 100%;
+      background: rgba(3,6,10,0.95);
+      backdrop-filter: blur(25px);
+      flex-direction: column;
+      padding: 20px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    
+    .nav-links.active {
+      display: flex;
+    }
+    
+    .nav-links a {
+      padding: 12px 16px;
+      margin: 4px 0;
+      border-radius: 12px;
+    }
+    
+    .mobile-menu {
+      display: flex;
+    }
+    
+
+
+    .social-grid {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    .community-grid {
+      grid-template-columns: 1fr;
+      gap: 25px;
+    }
+
+
+
+    .social-stats {
+      flex-direction: column;
+      gap: 15px;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+
+  <!-- Navigation -->
+  <nav class="nav at-top" id="navbar">
+    <a href="index.html" class="logo">
+      <button style="background: none; border: none; color: inherit; font: inherit; cursor: pointer; display: flex; align-items: center; gap: 12px;">
+        <script src="https://unpkg.com/@rive-app/canvas"></script>
+                <canvas id="riveCanvas1" width="35" height="17.5"></canvas>
+                <script>
+                  const rriveInstance = new rive.Rive({
+                    src: 'iqback.riv', // path to your file
+                    canvas: document.getElementById('riveCanvas1'),
+                    autoplay: true,
+                    stateMachines: ['State Machine 1'], // name from Rive editor
+                    onLoad: () => {
+                      const inputs = rriveInstance.stateMachineInputs('State Machine 1');
+                      const hoverInput = inputs.find(i => i.name === 'hover');
+                      const clickTrigger = inputs.find(i => i.name === 'clicked');
+                
+                      // Hover event
+                      document.getElementById('riveCanvas1').addEventListener('mouseenter', () => {
+                        hoverInput.value = true;
+                      });
+                      document.getElementById('riveCanvas1').addEventListener('mouseleave', () => {
+                        hoverInput.value = false;
+                      });
+                
+                      // Click event
+                      document.getElementById('riveCanvas1').addEventListener('click', () => {
+                        clickTrigger.fire();
+                      });
+                    }
+                  });
+                </script>
+        
+      </button>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#" class="nav-link active">Social Contact</a></li>
+    </ul>
+    <div class="mobile-menu" onclick="toggleMobileMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
+
+
+
+  <!-- Social Contact Page -->
+  <div class="social-page">
+    <div class="social-hero">
+      <h2 class="section-title">Connect With <span class="highlight" data-text="IconCraft">IconCraft</span></h2>
+      <p class="section-subtitle">Join our vibrant community of designers, creators, and icon enthusiasts across all platforms</p>
+    </div>
+      
+      <div class="social-grid">
+        <div class="social-card twitter glow-container" onclick="openSocialLink('https://twitter.com/iconcraft')">
+          <div class="social-icon"><script src="https://unpkg.com/@rive-app/canvas"></script>
+                <canvas id="x" width="100" height="100"></canvas>
+                <script>
+                  const twitter = new rive.Rive({
+                    src: 'x.riv', // path to your file
+                    canvas: document.getElementById('x'),
+                    autoplay: true,
+                    stateMachines: ['State Machine 1'], // name from Rive editor
+                    onLoad: () => {
+                      const inputs = twitter.stateMachineInputs('State Machine 1');
+                      const hoverInput = inputs.find(i => i.name === 'hover');
+                      const clickTrigger = inputs.find(i => i.name === 'clicked');
+                
+                      // Hover event
+                      document.getElementById('x').addEventListener('mouseenter', () => {
+                        hoverInput.value = true;
+                      });
+                      document.getElementById('x').addEventListener('mouseleave', () => {
+                        hoverInput.value = false;
+                      });
+                
+                      // Click event
+                      document.getElementById('x').addEventListener('click', () => {
+                        clickTrigger.fire();
+                      });
+                    }
+                  });
+                </script></div>
+          <h3 class="social-title">Twitter</h3>
+          <div class="social-handle">@IconCraft</div>
+          <p class="social-desc">Get the latest updates, design tips, and behind-the-scenes content from our creative team.</p>
+          <div class="social-stats">
+            <div class="social-stat">
+              <span class="social-stat-number">12.5K</span>
+              <div class="social-stat-label">Followers</div>
+            </div>
+            <div class="social-stat">
+              <span class="social-stat-number">2.8K</span>
+              <div class="social-stat-label">Tweets</div>
+            </div>
+          </div>
+          <button class="social-btn">Follow Us</button>
+        </div>
+
+        <div class="social-card instagram glow-container" onclick="openSocialLink('https://instagram.com/iconcraft')">
+          <div class="social-icon"><script src="https://unpkg.com/@rive-app/canvas"></script>
+                <canvas id="I" width="80" height="80"></canvas>
+                <script>
+                  const instagram = new rive.Rive({
+                    src: 'instagram.riv', // path to your file
+                    canvas: document.getElementById('I'),
+                    autoplay: true,
+                    stateMachines: ['State Machine 1'], // name from Rive editor
+                    onLoad: () => {
+                      const inputs = instagram.stateMachineInputs('State Machine 1');
+                      const hoverInput = inputs.find(i => i.name === 'hover');
+                      const clickTrigger = inputs.find(i => i.name === 'clicked');
+                
+                      // Hover event
+                      document.getElementById('I').addEventListener('mouseenter', () => {
+                        hoverInput.value = true;
+                      });
+                      document.getElementById('I').addEventListener('mouseleave', () => {
+                        hoverInput.value = false;
+                      });
+                
+                      // Click event
+                      document.getElementById('I').addEventListener('click', () => {
+                        clickTrigger.fire();
+                      });
+                    }
+                  });
+                </script></div>
+          <h3 class="social-title">Instagram</h3>
+          <div class="social-handle">@iconcraft</div>
+          <p class="social-desc">Visual inspiration, design process videos, and stunning icon showcases that spark creativity.</p>
+          <div class="social-stats">
+            <div class="social-stat">
+              <span class="social-stat-number">18.2K</span>
+              <div class="social-stat-label">Followers</div>
+            </div>
+            <div class="social-stat">
+              <span class="social-stat-number">1.2K</span>
+              <div class="social-stat-label">Posts</div>
+            </div>
+          </div>
+          <button class="social-btn">Follow Us</button>
+        </div>
+
+        <div class="social-card linkedin glow-container" onclick="openSocialLink('https://linkedin.com/company/iconcraft')">
+          <div class="social-icon"><script src="https://unpkg.com/@rive-app/canvas"></script>
+                <canvas id="linkedin" width="100" height="100"></canvas>
+                <script>
+                  const linkedin = new rive.Rive({
+                    src: 'linkedin.riv', // path to your file
+                    canvas: document.getElementById('linkedin'),
+                    autoplay: true,
+                    stateMachines: ['State Machine 1'], // name from Rive editor
+                    onLoad: () => {
+                      const inputs = linkedin.stateMachineInputs('State Machine 1');
+                      const hoverInput = inputs.find(i => i.name === 'hover');
+                      const clickTrigger = inputs.find(i => i.name === 'clicked');
+                
+                      // Hover event
+                      document.getElementById('linkedin').addEventListener('mouseenter', () => {
+                        hoverInput.value = true;
+                      });
+                      document.getElementById('linkedin').addEventListener('mouseleave', () => {
+                        hoverInput.value = false;
+                      });
+                
+                      // Click event
+                      document.getElementById('linkedin').addEventListener('click', () => {
+                        clickTrigger.fire();
+                      });
+                    }
+                  });
+                </script></div>
+          <h3 class="social-title">LinkedIn</h3>
+          <div class="social-handle">IconCraft</div>
+          <p class="social-desc">Professional insights, industry trends, and career opportunities in the design world.</p>
+          <div class="social-stats">
+            <div class="social-stat">
+              <span class="social-stat-number">8.7K</span>
+              <div class="social-stat-label">Followers</div>
+            </div>
+            <div class="social-stat">
+              <span class="social-stat-number">450</span>
+              <div class="social-stat-label">Posts</div>
+            </div>
+          </div>
+          <button class="social-btn">Connect</button>
+        </div>
+
+        <div class="social-card dribbble glow-container" onclick="openSocialLink('https://dribbble.com/iconcraft')">
+          <div class="social-icon"><script src="https://unpkg.com/@rive-app/canvas"></script>
+                <canvas id="shayan" width="100" height="80"></canvas>
+                <script>
+                  const sh = new rive.Rive({
+                    src: 'boll.riv', // path to your file
+                    canvas: document.getElementById('shayan'),
+                    autoplay: true,
+                    stateMachines: ['State Machine 1'], // name from Rive editor
+                    onLoad: () => {
+                      const inputs = sh.stateMachineInputs('State Machine 1');
+                      const hoverInput = inputs.find(i => i.name === 'hover');
+                      const clickTrigger = inputs.find(i => i.name === 'clicked');
+                
+                      // Hover event
+                      document.getElementById('shayan').addEventListener('mouseenter', () => {
+                        hoverInput.value = true;
+                      });
+                      document.getElementById('shayan').addEventListener('mouseleave', () => {
+                        hoverInput.value = false;
+                      });
+                
+                      // Click event
+                      document.getElementById('shayan').addEventListener('click', () => {
+                        clickTrigger.fire();
+                      });
+                    }
+                  });
+                </script></div>
+          <h3 class="social-title">Dribbble</h3>
+          <div class="social-handle">IconCraft</div>
+          <p class="social-desc">Explore our design portfolio, work-in-progress shots, and connect with fellow designers.</p>
+          <div class="social-stats">
+            <div class="social-stat">
+              <span class="social-stat-number">15.3K</span>
+              <div class="social-stat-label">Followers</div>
+            </div>
+            <div class="social-stat">
+              <span class="social-stat-number">892</span>
+              <div class="social-stat-label">Shots</div>
+            </div>
+          </div>
+          <button class="social-btn">Follow Us</button>
+        </div>
+
+        <div class="social-card youtube glow-container" onclick="openSocialLink('https://youtube.com/iconcraft')">
+          <div class="social-icon"><script src="https://unpkg.com/@rive-app/canvas"></script>
+                <canvas id="Y" width="60" height="60"></canvas>
+                <script>
+                  const youtub = new rive.Rive({
+                    src: 'youtub.riv', // path to your file
+                    canvas: document.getElementById('Y'),
+                    autoplay: true,
+                    stateMachines: ['State Machine 1'], // name from Rive editor
+                    onLoad: () => {
+                      const inputs = youtub.stateMachineInputs('State Machine 1');
+                      const hoverInput = inputs.find(i => i.name === 'hover');
+                      const clickTrigger = inputs.find(i => i.name === 'clicked');
+                
+                      // Hover event
+                      document.getElementById('Y').addEventListener('mouseenter', () => {
+                        hoverInput.value = true;
+                      });
+                      document.getElementById('Y').addEventListener('mouseleave', () => {
+                        hoverInput.value = false;
+                      });
+                
+                      // Click event
+                      document.getElementById('Y').addEventListener('click', () => {
+                        clickTrigger.fire();
+                      });
+                    }
+                  });
+                </script></div>
+          <h3 class="social-title">YouTube</h3>
+          <div class="social-handle">IconCraft</div>
+          <p class="social-desc">Design tutorials, creator spotlights, and deep dives into the icon creation process.</p>
+          <div class="social-stats">
+            <div class="social-stat">
+              <span class="social-stat-number">24.1K</span>
+              <div class="social-stat-label">Subscribers</div>
+            </div>
+            <div class="social-stat">
+              <span class="social-stat-number">156</span>
+              <div class="social-stat-label">Videos</div>
+            </div>
+          </div>
+          <button class="social-btn">Subscribe</button>
+        </div>
+
+        <div class="social-card discord glow-container" onclick="openSocialLink('https://discord.gg/iconcraft')">
+          <div class="social-icon"><script src="https://unpkg.com/@rive-app/canvas"></script>
+                <canvas id="d" width="100" height="100"></canvas>
+                <script>
+                  const discord = new rive.Rive({
+                    src: 'discord.riv', // path to your file
+                    canvas: document.getElementById('d'),
+                    autoplay: true,
+                    stateMachines: ['State Machine 1'], // name from Rive editor
+                    onLoad: () => {
+                      const inputs = discord.stateMachineInputs('State Machine 1');
+                      const hoverInput = inputs.find(i => i.name === 'hover');
+                      const clickTrigger = inputs.find(i => i.name === 'clicked');
+                
+                      // Hover event
+                      document.getElementById('d').addEventListener('mouseenter', () => {
+                        hoverInput.value = true;
+                      });
+                      document.getElementById('d').addEventListener('mouseleave', () => {
+                        hoverInput.value = false;
+                      });
+                
+                      // Click event
+                      document.getElementById('d').addEventListener('click', () => {
+                        clickTrigger.fire();
+                      });
+                    }
+                  });
+                </script></div>
+          <h3 class="social-title">Discord</h3>
+          <div class="social-handle">IconCraft Community</div>
+          <p class="social-desc">Join our active community for real-time discussions, feedback, and collaboration opportunities.</p>
+          <div class="social-stats">
+            <div class="social-stat">
+              <span class="social-stat-number">5.8K</span>
+              <div class="social-stat-label">Members</div>
+            </div>
+            <div class="social-stat">
+              <span class="social-stat-number">24/7</span>
+              <div class="social-stat-label">Active</div>
+            </div>
+          </div>
+          <button class="social-btn">Join Server</button>
+        </div>
+      </div>
+
+      <!-- Community Section -->
+      <div class="community-section">
+        <h3 class="community-title">Our Growing Community</h3>
+        <p class="community-subtitle">Join thousands of designers, developers, and creative professionals who trust IconCraft for their projects</p>
+        
+        <div class="community-grid">
+          <div class="community-card glow-container">
+            <div class="community-icon">👨‍🎨</div>
+            <h4>Active Creators</h4>
+            <span class="community-number">2,500+</span>
+            <p>Talented designers creating world-first icons</p>
+          </div>
+          
+          <div class="community-card glow-container">
+            <div class="community-icon">🌍</div>
+            <h4>Global Reach</h4>
+            <span class="community-number">85</span>
+            <p>Countries represented in our community</p>
+          </div>
+          
+          <div class="community-card glow-container">
+            <div class="community-icon">💬</div>
+            <h4>Daily Interactions</h4>
+            <span class="community-number">1,200+</span>
+            <p>Messages and collaborations every day</p>
+          </div>
+          
+          <div class="community-card glow-container">
+            <div class="community-icon">🎯</div>
+            <h4>Projects Completed</h4>
+            <span class="community-number">15K+</span>
+            <p>Successful projects using our icons</p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+
+
+
+  <!-- Footer -->
+  
+    
+    <div class="footer-bottom">
+      <p>&copy; 2024 IconCraft. All rights reserved. Every icon is a world-first creation.</p>
+    </div>
+  </footer>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <div id="modalContent">
+        <!-- Modal content will be populated by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+
+    function toggleMobileMenu() {
+      document.getElementById('navLinks').classList.toggle('active');
+    }
+
+    // Social functions
+    function openSocialLink(url) {
+      // In a real implementation, this would open the actual social media link
+      alert(`Opening ${url}\n\nThis is a demo - in a real site, this would take you to our social media page!`);
+    }
+
+
+
+    // Modal functions
+    function showModal(type) {
+      const modal = document.getElementById('modal');
+      const content = document.getElementById('modalContent');
+      
+      let modalHTML = '';
+      
+      switch(type) {
+        case 'creator':
+          modalHTML = `
+            <h3 style="margin-bottom: 20px; color: var(--primary-blue);">Creator Dashboard</h3>
+            <p style="margin-bottom: 20px; color: rgba(255,255,255,0.8);">Ready to start creating world-first icons? Our creator platform is launching soon!</p>
+            <div style="margin-bottom: 20px;">
+              <input type="email" placeholder="Enter your email for early access" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(15,25,35,0.8); color: white; margin-bottom: 15px;">
+              <button class="cta" style="width: 100%; margin: 0;">Join Waitlist</button>
+            </div>
+          `;
+          break;
+        case 'help':
+          modalHTML = `
+            <h3 style="margin-bottom: 20px; color: var(--primary-blue);">Help Center</h3>
+            <div style="text-align: left; color: rgba(255,255,255,0.8);">
+              <h4 style="color: white; margin: 15px 0 10px;">Frequently Asked Questions</h4>
+              <p><strong>Q: Are the icons really world-first?</strong><br>A: Yes! Every icon is completely original and exclusive.</p>
+              <p><strong>Q: What formats do you provide?</strong><br>A: SVG, PNG, and source files for premium plans.</p>
+              <p><strong>Q: Can I request custom icons?</strong><br>A: Yes, with Professional and Enterprise plans.</p>
+            </div>
+          `;
+          break;
+        case 'license':
+          modalHTML = `
+            <h3 style="margin-bottom: 20px; color: var(--primary-blue);">License Terms</h3>
+            <div style="text-align: left; color: rgba(255,255,255,0.8); max-height: 300px; overflow-y: auto;">
+              <h4 style="color: white;">Standard License</h4>
+              <p>• Use in personal and commercial projects</p>
+              <p>• Modify and customize as needed</p>
+              <p>• No resale or redistribution</p>
+              <h4 style="color: white; margin-top: 20px;">Extended License</h4>
+              <p>• All Standard License rights</p>
+              <p>• Use in products for sale</p>
+              <p>• Team sharing allowed</p>
+            </div>
+          `;
+          break;
+        case 'privacy':
+          modalHTML = `
+            <h3 style="margin-bottom: 20px; color: var(--primary-blue);">Privacy Policy</h3>
+            <div style="text-align: left; color: rgba(255,255,255,0.8); max-height: 300px; overflow-y: auto;">
+              <p>We respect your privacy and protect your personal information.</p>
+              <h4 style="color: white; margin: 15px 0 10px;">Data Collection</h4>
+              <p>We only collect necessary information for account management and purchases.</p>
+              <h4 style="color: white; margin: 15px 0 10px;">Data Usage</h4>
+              <p>Your data is used solely for providing our services and improving user experience.</p>
+            </div>
+          `;
+          break;
+      }
+      
+      content.innerHTML = modalHTML;
+      modal.classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+    }
+
+
+
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+      const navbar = document.getElementById('navbar');
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+        navbar.classList.remove('at-top');
+      } else {
+        navbar.classList.remove('scrolled');
+        navbar.classList.add('at-top');
+      }
+    });
+
+    // Close modal when clicking outside
+    document.getElementById('modal').addEventListener('click', (e) => {
+      if (e.target.id === 'modal') {
+        closeModal();
+      }
+    });
+
+    // Animated counter function
+    function animateCounter(element, target, duration = 2000) {
+      const start = 1;
+      const increment = (target - start) / (duration / 16);
+      let current = start;
+      
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          current = target;
+          clearInterval(timer);
+        }
+        
+        // Format the number based on the target
+        let displayValue;
+        if (target >= 1000) {
+          displayValue = Math.floor(current).toLocaleString() + '+';
+        } else if (target === 85) {
+          displayValue = Math.floor(current);
+        } else if (target >= 15000) {
+          displayValue = Math.floor(current / 1000) + 'K+';
+        } else {
+          displayValue = Math.floor(current).toLocaleString() + '+';
+        }
+        
+        element.textContent = displayValue;
+      }, 16);
+    }
+
+    // Start counters when page becomes visible
+    function startCounters() {
+      setTimeout(() => {
+        const counters = document.querySelectorAll('.social-stat-number, .community-number');
+        counters.forEach(counter => {
+          const text = counter.textContent;
+          let target;
+          
+          // Extract target number from text
+          if (text.includes('K')) {
+            target = parseFloat(text.replace('K', '')) * 1000;
+          } else if (text.includes('+')) {
+            target = parseInt(text.replace(/[+,]/g, ''));
+          } else if (text === '24/7') {
+            return; // Skip this one
+          } else {
+            target = parseInt(text.replace(/[,]/g, ''));
+          }
+          
+          if (!isNaN(target)) {
+            counter.textContent = '1';
+            animateCounter(counter, target);
+          }
+        });
+      }, 300);
+    }
+
+    // Scroll animations
+    function setupScrollAnimations() {
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate');
+          }
+        });
+      }, observerOptions);
+
+      // Observe elements for animation
+      const animateElements = document.querySelectorAll('.section-title, .section-subtitle, .feature-card');
+      animateElements.forEach(el => observer.observe(el));
+    }
+
+    // Rive animation initialization
+    function initializeRiveAnimations() {
+      const riveElements = document.querySelectorAll('.rive-icon:not([data-initialized])');
+      
+      riveElements.forEach(canvas => {
+        const riveFile = canvas.getAttribute('data-rive');
+        if (!riveFile) return;
+        
+        try {
+          // Create Rive instance with auto-play
+          const r = new rive.Rive({
+            src: riveFile,
+            canvas: canvas,
+            autoplay: true,
+            stateMachines: 'State Machine 1', // Default state machine name
+            onLoad: () => {
+              // Animation loaded successfully
+              canvas.setAttribute('data-initialized', 'true');
+            },
+            onLoadError: (err) => {
+              // If Rive file doesn't exist, show a placeholder
+              console.log(`Rive file ${riveFile} not found - showing placeholder`);
+              canvas.style.background = 'linear-gradient(135deg, rgba(46,161,255,0.3), rgba(14,108,255,0.2))';
+              canvas.style.borderRadius = '8px';
+              canvas.setAttribute('data-initialized', 'true');
+            }
+          });
+        } catch (error) {
+          // Fallback for any initialization errors
+          console.log(`Error initializing ${riveFile}:`, error);
+          canvas.style.background = 'linear-gradient(135deg, rgba(46,161,255,0.3), rgba(14,108,255,0.2))';
+          canvas.style.borderRadius = '8px';
+          canvas.setAttribute('data-initialized', 'true');
+        }
+      });
+    }
+
+    // Force scroll to top on page load/refresh
+    function forceScrollToTop() {
+      // Immediately scroll to top
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      
+      // Force scroll again after a brief delay to ensure it works
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      }, 10);
+    }
+
+    // Cursor glow effect
+    document.addEventListener('DOMContentLoaded', () => {
+      // Force scroll to top on page load
+      forceScrollToTop();
+      
+      // Initialize Rive animations
+      setTimeout(() => initializeRiveAnimations(), 500);
+      
+      // Start counters for social page
+      startCounters();
+      
+      // Track all elements with glow effects
+      const glowElements = document.querySelectorAll('.glow-container, .feature-card, .social-card, .community-card, .newsletter-card, .contact-form');
+      
+      glowElements.forEach(element => {
+        element.addEventListener('mousemove', (e) => {
+          const rect = element.getBoundingClientRect();
+          const x = ((e.clientX - rect.left) / rect.width) * 100;
+          const y = ((e.clientY - rect.top) / rect.height) * 100;
+          
+          element.style.setProperty('--mouse-x', `${x}%`);
+          element.style.setProperty('--mouse-y', `${y}%`);
+        });
+      });
+      
+      // Setup scroll animations
+      setupScrollAnimations();
+    });
+
+    // Force scroll to top on page refresh/reload
+    window.addEventListener('beforeunload', () => {
+      window.scrollTo(0, 0);
+    });
+
+    // Additional scroll to top enforcement
+    if (history.scrollRestoration) {
+      history.scrollRestoration = 'manual';
+    }
+  </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'973331f3a4c47a99',t:'MTc1NTg3NDM1OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

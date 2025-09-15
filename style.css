@@ -1,0 +1,48 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto; /* Allows for vertical scrolling */
+    font-family: sans-serif;
+    color: #ffffff;
+}
+
+/* This container holds the Spline viewer and is fixed on top */
+.spline-interactive-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* Puts the Spline layer in front */
+    /* Shifts the Spline viewer 20px to the right */
+    transform: translateX(20px); 
+}
+
+/* The Spline viewer itself fills the container */
+spline-viewer {
+    width: 100%;
+    height: 100%;
+}
+
+/* This container holds your content, on top of the Spline */
+.content-wrapper {
+    position: relative;
+    z-index: 2; /* Ensures the content is on top of the Spline */
+    /* This makes the background of the wrapper transparent to mouse clicks */
+    pointer-events: none;
+    background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent overlay for readability */
+}
+
+/* This re-enables mouse events for specific elements */
+.content-wrapper h1, .content-wrapper h2, .content-wrapper p, .content-wrapper a {
+    pointer-events: auto;
+}
+
+/* Styling for the content sections to create more scrollable space */
+.page-section {
+    padding: 100px 20px;
+    min-height: 100vh; /* Ensures each section is at least one viewport height tall */
+    text-align: center;
+}

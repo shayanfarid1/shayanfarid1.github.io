@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Spline Background</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow-y: auto; 
+      font-family: sans-serif;
+      color: #ffffff;
+      background-color: #121212; /* رنگ ثابت بکگراند (پایین‌ترین لایه) */
+    }
+
+    .spline-interactive-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0; /* لایه وسطی، بالاتر از رنگ بکگراند */
+    }
+
+    spline-viewer {
+      width: 100%;
+      height: 100%;
+      transform: translateX(130px); /* جابجایی به راست */
+    }
+
+    .content-wrapper {
+      position: relative;
+      z-index: 1; /* بالاتر از اسپلاین */
+      background-color: rgba(0, 0, 0, 0.4); 
+    }
+
+    .page-section {
+      padding: 100px 20px;
+      min-height: 100vh; 
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <!-- اسپلاین روی رنگ ثابت -->
+  <div class="spline-interactive-bg">
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.10.57/build/spline-viewer.js"></script>
+    <spline-viewer url="https://prod.spline.design/jSBk6RuiTSg4colh/scene.splinecode"></spline-viewer>
+  </div>
+
+  <!-- متن بالاتر از همه -->
+  <div class="content-wrapper">
+    <section class="page-section first-section">
+      <h1>Welcome to Our School!</h1>
+      <p>You can <b>interact with the 3D scene</b> in the background. Try clicking and dragging! Scroll down to see more content.</p>
+    </section>
+
+    <section class="page-section">
+      <h2>Our Mission</h2>
+      <p>We are dedicated to fostering a creative and collaborative learning environment for all students.</p>
+      <p>Our goal is to prepare future leaders with the skills and knowledge they need to succeed in a changing world.</p>
+    </section>
+
+    <section class="page-section">
+      <h2>School Events</h2>
+      <p>Join us for our annual science fair, art exhibition, and sports day!</p>
+      <p>Check our calendar for upcoming dates and times.</p>
+    </section>
+
+    <section class="page-section">
+      <h2>Contact Us</h2>
+      <p>Have questions? Feel free to reach out to us at info@yourschool.edu or call (123) 456-7890.</p>
+      <p>We look forward to hearing from you!</p>
+    </section>
+  </div>
+</body>
+</html>

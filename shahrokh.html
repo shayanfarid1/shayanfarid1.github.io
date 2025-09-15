@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shayan • Portfolio</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            base: '#121212'
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'Segoe UI', 'Helvetica', 'Arial', 'sans-serif'],
+          },
+          boxShadow: {
+            soft: '0 10px 30px rgba(0,0,0,0.35)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html, body { height: 100%; background-color: #121212; }
+    /* Background: exact as provided, no blur */
+    .spline-interactive-bg {
+      position: fixed; inset: 0; z-index: 0;
+    }
+    spline-viewer {
+      width: 100%; height: 100%;
+      transform: translateX(130px);
+    }
+
+    .content-wrapper {
+      position: relative; z-index: 1;
+      background: rgba(0,0,0,0); /* transparent, no blur */
+    }
+
+    /* Thin left nav */
+    .sidebar {
+      width: 72px; /* thinner */
+      background: rgba(0,0,0,0.6);
+      border-right: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: none;
+    }
+    .sidebar a {
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      color: rgba(255,255,255,0.75); padding: 12px 8px; border-radius: 10px; text-decoration: none;
+      transition: background .2s ease, color .2s ease;
+      font-size: 12px;
+    }
+    .sidebar a:hover, .sidebar a.active {
+      background: rgba(255,255,255,0.1); color: #fff;
+    }
+    .sidebar .ico {
+      font-size: 18px; line-height: 1;
+    }
+
+    /* Main layout spacing to avoid overlap with slim sidebar */
+    .main-wrap {
+      padding-left: 88px; /* sidebar width + spacing */
+    }
+
+    .section { min-height: 100vh; padding: 72px 20px; }
+    .card {
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+    .btn {
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #fff; padding: 10px 14px; border-radius: 10px;
+      background: rgba(255,255,255,0.05);
+      transition: background .2s ease, border-color .2s ease, opacity .2s ease;
+      font-weight: 500;
+    }
+    .btn:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.35); }
+    .pill {
+      display: inline-block; padding: 3px 10px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.3); color: #fff; font-size: 11px;
+    }
+    :focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(255,255,255,0.35); border-radius: 10px; }
+    html { scroll-behavior: smooth; }
+
+    /* Smooth page transition */
+    .page { opacity: 0; transform: translateY(8px); pointer-events: none; transition: opacity .22s ease, transform .22s ease; }
+    .page.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+    /* Top slider: reliable reveal/hide */
+    #topSlider {
+      position: fixed; left: 0; right: 0; top: 0;
+      transform: translateY(-100%);
+      height: 60px;
+      background: rgba(0,0,0,0.78);
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      z-index: 30;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform .22s ease;
+      will-change: transform;
+      pointer-events: none; /* disabled when hidden */
+    }
+    #topSlider.show {
+      transform: translateY(0);
+      pointer-events: auto; /* interactive when visible */
+    }
+    /* Hover zone at the very top */
+    #hoverZone {
+      position: fixed; left: 0; right: 0; top: 0; height: 12px; z-index: 40;
+    }
+
+    /* Footer bar */
+    .footer-chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 10px; border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.5);
+      color: rgba(255,255,255,0.8);
+    }
+  </style>
+</head>
+<body class="font-sans text-white bg-base">
+  <!-- Fixed Spline background -->
+  <div class="spline-interactive-bg">
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.10.57/build/spline-viewer.js"></script>
+    <spline-viewer url="https://prod.spline.design/jSBk6RuiTSg4colh/scene.splinecode"></spline-viewer>
+  </div>
+
+  <!-- Top slider (fixed) -->
+  <div id="topSlider" aria-hidden="true">
+    <div class="max-w-5xl w-full px-4 flex items-center justify-between">
+      <span class="hidden sm:block text-white/70 text-sm">Quick Switch</span>
+      <div class="flex gap-2">
+        <button class="btn" data-nav="home">Home</button>
+        <button class="btn" data-nav="apps">Apps</button>
+        <button class="btn" data-nav="about">About</button>
+        <button class="btn" data-nav="contact">Contact</button>
+      </div>
+    </div>
+  </div>
+  <div id="hoverZone" title="Move your mouse here"></div>
+
+  <div class="content-wrapper">
+    <!-- Thin Left Sidebar -->
+    <aside class="sidebar fixed left-0 top-0 h-full z-20 flex flex-col items-center">
+      <div class="h-16 w-full flex items-center justify-center border-b border-white/10">
+        <a href="#" data-nav="home" class="flex flex-col items-center">
+          <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-white text-black font-bold">S</span>
+          <span class="sr-only">Shayan</span>
+        </a>
+      </div>
+      <nav class="p-2 flex-1 flex flex-col gap-2 items-center">
+        <a href="#" data-nav="home" class="w-14" aria-label="Home">
+          <span class="ico">🏠</span>
+          <span class="block text-[10px] mt-1 text-center">Home</span>
+        </a>
+        <a href="#" data-nav="apps" class="w-14" aria-label="Apps">
+          <span class="ico">🧰</span>
+          <span class="block text-[10px] mt-1 text-center">Apps</span>
+        </a>
+        <a href="#" data-nav="about" class="w-14" aria-label="About">
+          <span class="ico">👤</span>
+          <span class="block text-[10px] mt-1 text-center">About</span>
+        </a>
+        <a href="#" data-nav="contact" class="w-14" aria-label="Contact">
+          <span class="ico">✉️</span>
+          <span class="block text-[10px] mt-1 text-center">Contact</span>
+        </a>
+      </nav>
+      <div class="w-full p-2 border-t border-white/10 text-center text-[10px] text-white/60">
+        © <span id="year"></span>
+      </div>
+    </aside>
+
+    <!-- Main pages -->
+    <main class="main-wrap max-w-7xl mx-auto">
+      <!-- HOME -->
+      <section id="page-home" class="page active section">
+        <div class="grid md:grid-cols-2 gap-6 items-stretch">
+          <div class="card p-7">
+            <p class="text-xs uppercase tracking-widest text-white/60 mb-2">Portfolio</p>
+            <h1 class="text-3xl sm:text-4xl font-extrabold leading-tight">
+              Hi, I’m Shayan.<br/> Designer • Motion • 3D
+            </h1>
+            <p class="text-white/70 mt-4 leading-relaxed">
+              Explore my tools, projects and resume, learn more about me, and get in touch.
+              The background is interactive—try dragging it!
+            </p>
+            <div class="mt-6 flex flex-wrap gap-2">
+              <button data-nav="apps" class="btn">Go to Apps</button>
+              <button data-nav="contact" class="btn">Contact</button>
+            </div>
+          </div>
+          <div class="card p-6">
+            <h3 class="text-lg font-semibold mb-3">Quick Links</h3>
+            <div class="grid sm:grid-cols-2 gap-3">
+              <button data-nav="apps" class="card p-4 bg-white/5 hover:bg-white/10 transition text-left">
+                <div class="text-2xl">🧰</div>
+                <div class="mt-2 font-semibold">Tools & Skills</div>
+                <div class="text-sm text-white/70">Figma, Photoshop, Rive, Spline, Blender, Illustrator</div>
+              </button>
+              <button data-nav="apps" data-anchor="projects" class="card p-4 bg-white/5 hover:bg-white/10 transition text-left">
+                <div class="text-2xl">📁</div>
+                <div class="mt-2 font-semibold">Projects & Resume</div>
+                <div class="text-sm text-white/70">See selected works and CV</div>
+              </button>
+              <button data-nav="about" class="card p-4 bg-white/5 hover:bg-white/10 transition text-left">
+                <div class="text-2xl">👤</div>
+                <div class="mt-2 font-semibold">About Me</div>
+                <div class="text-sm text-white/70">My story and values</div>
+              </button>
+              <button data-nav="contact" class="card p-4 bg-white/5 hover:bg-white/10 transition text-left">
+                <div class="text-2xl">✉️</div>
+                <div class="mt-2 font-semibold">Contact</div>
+                <div class="text-sm text-white/70">Let’s collaborate</div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- APPS -->
+      <section id="page-apps" class="page section">
+        <div class="mb-6">
+          <h2 class="text-3xl font-bold">Apps & Skills</h2>
+          <p class="text-white/70 mt-1">Tools I use, what I’m learning, and what’s coming soon.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div class="card p-5">
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-semibold">Figma</h3>
+              <span class="pill">Expert</span>
+            </div>
+            <p class="text-white/70 mt-2">UI kits, design systems, prototypes.</p>
+          </div>
+          <div class="card p-5">
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-semibold">Photoshop</h3>
+              <span class="pill">Expert</span>
+            </div>
+            <p class="text-white/70 mt-2">Compositing, retouching, social graphics.</p>
+          </div>
+          <div class="card p-5">
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-semibold">Rive</h3>
+              <span class="pill">Expert</span>
+            </div>
+            <p class="text-white/70 mt-2">Real-time UI animations and interactions.</p>
+          </div>
+          <div class="card p-5">
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-semibold">Spline</h3>
+              <span class="pill">Beginner</span>
+            </div>
+            <p class="text-white/70 mt-2">Interactive 3D for the web.</p>
+          </div>
+          <div class="card p-5 opacity-90">
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-semibold">Blender</h3>
+              <span class="pill">Coming Soon</span>
+            </div>
+            <p class="text-white/70 mt-2">3D modeling and rendering.</p>
+          </div>
+          <div class="card p-5 opacity-90">
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-semibold">Adobe Illustrator</h3>
+              <span class="pill">Coming Soon</span>
+            </div>
+            <p class="text-white/70 mt-2">Vector art and icons.</p>
+          </div>
+        </div>
+
+        <!-- Projects & Resume -->
+        <div class="mt-10" id="apps-projects">
+          <div class="flex items-center justify-between gap-3 flex-wrap">
+            <h3 class="text-2xl font-semibold">Projects & Resume</h3>
+            <div class="flex gap-2">
+              <button data-filter="all" class="btn">All</button>
+              <button data-filter="design" class="btn">Design</button>
+              <button data-filter="motion" class="btn">Motion</button>
+              <button data-filter="3d" class="btn">3D</button>
+              <button id="resumeBtn" class="btn">View Resume</button>
+            </div>
+          </div>
+
+          <div id="projectsGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-5">
+            <article class="card p-5 project" data-tags="design">
+              <div class="flex items-center justify-between">
+                <h4 class="font-semibold">Mobile Banking UI</h4>
+                <span class="text-xs text-white/60">Design</span>
+              </div>
+              <p class="text-white/70 mt-2">Figma design system and flows.</p>
+              <button class="btn w-full mt-4 open-project">Preview</button>
+            </article>
+            <article class="card p-5 project" data-tags="motion">
+              <div class="flex items-center justify-between">
+                <h4 class="font-semibold">Onboarding Animation</h4>
+                <span class="text-xs text-white/60">Motion</span>
+              </div>
+              <p class="text-white/70 mt-2">Rive interactive state machine.</p>
+              <button class="btn w-full mt-4 open-project">Preview</button>
+            </article>
+            <article class="card p-5 project" data-tags="3d">
+              <div class="flex items-center justify-between">
+                <h4 class="font-semibold">Hero 3D Header</h4>
+                <span class="text-xs text-white/60">3D</span>
+              </div>
+              <p class="text-white/70 mt-2">Spline interactive scene.</p>
+              <button class="btn w-full mt-4 open-project">Preview</button>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABOUT -->
+      <section id="page-about" class="page section">
+        <div class="card p-7">
+          <div class="flex flex-col lg:flex-row gap-6 items-start">
+            <div class="w-full lg:w-2/3">
+              <h2 class="text-3xl font-bold">About Me</h2>
+              <p class="text-white/70 mt-3 leading-relaxed">
+                I’m Shayan — a designer and creative technologist who loves crafting smooth,
+                interactive experiences. I blend product thinking with motion and 3D to make
+                interfaces feel alive and meaningful.
+              </p>
+              <div class="grid sm:grid-cols-2 gap-3 mt-5">
+                <div class="p-4 border border-white/10 rounded-xl">
+                  <div class="text-2xl">🎯</div>
+                  <div class="mt-2 font-semibold">What I value</div>
+                  <div class="text-white/70 text-sm">Clarity, usability, and delight.</div>
+                </div>
+                <div class="p-4 border border-white/10 rounded-xl">
+                  <div class="text-2xl">⚡</div>
+                  <div class="mt-2 font-semibold">Superpower</div>
+                  <div class="text-white/70 text-sm">Turning complex ideas into simple flows.</div>
+                </div>
+              </div>
+              <div class="mt-5">
+                <button data-nav="apps" class="btn">See my work</button>
+              </div>
+            </div>
+            <div class="w-full lg:w-1/3">
+              <div class="p-5 border border-white/10 rounded-2xl">
+                <div class="text-sm uppercase tracking-widest text-white/70">Highlights</div>
+                <ul class="mt-3 space-y-2 text-white/75">
+                  <li>• Expert in Figma, Photoshop, Rive</li>
+                  <li>• Beginner in Spline</li>
+                  <li>• Blender & Illustrator coming soon</li>
+                  <li>• Love motion + 3D interfaces</li>
+                </ul>
+                <div class="mt-5">
+                  <button id="downloadResume" class="btn w-full">Download Resume (PDF)</button>
+                  <p class="text-xs text-white/60 mt-2">Demo file generator.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTACT -->
+      <section id="page-contact" class="page section">
+        <div class="card p-7">
+          <h2 class="text-3xl font-bold">Contact</h2>
+          <p class="text-white/70 mt-2">Have a project or just want to say hi?</p>
+
+          <div class="mt-5 p-4 border border-white/10 rounded-xl text-white/80">
+            Demo only — no emails are sent. I can connect this to your real email or a form service if you want.
+          </div>
+          <form id="contactForm" class="mt-4 grid sm:grid-cols-2 gap-4">
+            <div class="sm:col-span-2">
+              <label class="block text-sm mb-2">Your Name</label>
+              <input type="text" name="name" required placeholder="John Doe" class="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 text-white placeholder:text-white/50">
+            </div>
+            <div>
+              <label class="block text-sm mb-2">Email</label>
+              <input type="email" name="email" required placeholder="you@example.com" class="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 text-white placeholder:text-white/50">
+            </div>
+            <div>
+              <label class="block text-sm mb-2">Subject</label>
+              <input type="text" name="subject" required placeholder="Let’s collaborate" class="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 text-white placeholder:text-white/50">
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-sm mb-2">Message</label>
+              <textarea name="message" required rows="5" placeholder="Tell me about your idea..." class="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 text-white placeholder:text-white/50"></textarea>
+            </div>
+            <div class="sm:col-span-2 flex items-center gap-3">
+              <button type="submit" class="btn">Send Message</button>
+              <span id="formNote" class="text-xs text-white/60">Demo only — not sending.</span>
+            </div>
+          </form>
+
+          <div class="mt-7 grid sm:grid-cols-3 gap-3">
+            <a class="card p-4 hover:bg-white/10 transition" href="#" aria-disabled="true">
+              <div class="text-2xl">📧</div>
+              <div class="mt-2 font-semibold">Email</div>
+              <div class="text-sm text-white/70">Add your real email</div>
+            </a>
+            <a class="card p-4 hover:bg-white/10 transition" href="#" aria-disabled="true">
+              <div class="text-2xl">💼</div>
+              <div class="mt-2 font-semibold">LinkedIn</div>
+              <div class="text-sm text-white/70">Add your profile link</div>
+            </a>
+            <a class="card p-4 hover:bg-white/10 transition" href="#" aria-disabled="true">
+              <div class="text-2xl">🌐</div>
+              <div class="mt-2 font-semibold">Website</div>
+              <div class="text-sm text-white/70">This portfolio</div>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-wrap py-8 text-center text-white/70">
+      <div>
+        <div class="footer-chip">
+          <span>© <span id="year2"></span> Shayan</span>
+          <span class="opacity-60">•</span>
+          <span>B&W Edition</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Sidebar active link helper
+    function setActiveNav(target) {
+      document.querySelectorAll('.sidebar a[data-nav]').forEach(a => {
+        a.classList.toggle('active', a.getAttribute('data-nav') === target);
+      });
+    }
+
+    // Top slider reveal/hide: robust logic
+    const topSlider = document.getElementById('topSlider');
+    const hoverZone = document.getElementById('hoverZone');
+    let sliderTimer = null;
+
+    function revealSlider() {
+      clearTimeout(sliderTimer);
+      topSlider.classList.add('show');
+    }
+    function scheduleHideSlider() {
+      clearTimeout(sliderTimer);
+      // small delay prevents flicker when moving from bar to page
+      sliderTimer = setTimeout(() => topSlider.classList.remove('show'), 220);
+    }
+
+    hoverZone.addEventListener('mouseenter', revealSlider);
+    hoverZone.addEventListener('mouseleave', scheduleHideSlider);
+    topSlider.addEventListener('mouseenter', revealSlider);
+    topSlider.addEventListener('mouseleave', scheduleHideSlider);
+
+    // SPA-style pages
+    const pages = ['home','apps','about','contact'];
+    const pageEls = {
+      home: document.getElementById('page-home'),
+      apps: document.getElementById('page-apps'),
+      about: document.getElementById('page-about'),
+      contact: document.getElementById('page-contact'),
+    };
+    let pendingAnchor = null;
+
+    function showPage(name) {
+      pages.forEach(p => pageEls[p].classList.toggle('active', p === name));
+      history.replaceState(null, '', '#' + name);
+      setActiveNav(name);
+      if (name === 'apps' && pendingAnchor === 'projects') {
+        const el = document.getElementById('apps-projects');
+        el && el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        pendingAnchor = null;
+      }
+    }
+
+    // Initialize from hash
+    const start = location.hash.replace('#','');
+    showPage(pages.includes(start) ? start : 'home');
+
+    // Nav handling (sidebar and top slider)
+    document.querySelectorAll('[data-nav]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        const page = el.getAttribute('data-nav');
+        const anchor = el.getAttribute('data-anchor');
+        if (anchor) pendingAnchor = anchor;
+        if (pages.includes(page)) showPage(page);
+        // hide quick slider after navigating
+        topSlider.classList.remove('show');
+      });
+    });
+
+    // Years
+    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('year2').textContent = new Date().getFullYear();
+
+    // Projects filtering
+    const grid = document.getElementById('projectsGrid');
+    function filterProjects(tag) {
+      const cards = grid.querySelectorAll('.project');
+      cards.forEach(c => {
+        const tags = (c.getAttribute('data-tags') || '').split(',').map(s => s.trim());
+        c.style.display = (tag === 'all' || tags.includes(tag)) ? '' : 'none';
+      });
+    }
+    document.querySelectorAll('[data-filter]').forEach(btn => {
+      btn.addEventListener('click', () => filterProjects(btn.getAttribute('data-filter')));
+    });
+
+    // Project preview modal
+    const modal = (() => {
+      const wrap = document.createElement('div');
+      wrap.style.position = 'fixed';
+      wrap.style.inset = '0';
+      wrap.style.display = 'none';
+      wrap.style.zIndex = '50';
+      wrap.innerHTML = `
+        <div style="position:absolute;inset:0;background:rgba(0,0,0,0.6)"></div>
+        <div style="position:relative;max-width:720px;margin:10vh auto;background:rgba(0,0,0,0.9);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:24px;color:#fff;box-shadow:0 10px 40px rgba(0,0,0,0.45)">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+            <h3 id="modalTitle" style="font-weight:700;font-size:20px">Preview</h3>
+            <button id="modalClose" class="btn" style="padding:8px 12px">Close</button>
+          </div>
+          <p id="modalBody" style="color:#BDBDBD;margin-top:10px">This is a short preview description.</p>
+        </div>
+      `;
+      document.body.appendChild(wrap);
+      wrap.querySelector('#modalClose').addEventListener('click', () => wrap.style.display = 'none');
+      wrap.firstElementChild.addEventListener('click', () => wrap.style.display = 'none');
+      return {
+        open(title, desc) {
+          wrap.querySelector('#modalTitle').textContent = title;
+          wrap.querySelector('#modalBody').textContent = desc;
+          wrap.style.display = 'block';
+        }
+      }
+    })();
+
+    document.querySelectorAll('.open-project').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        const card = e.currentTarget.closest('.card');
+        const title = card.querySelector('h4')?.textContent || 'Project';
+        const tag = card.querySelector('span.text-xs')?.textContent || '';
+        const desc = card.querySelector('p')?.textContent || '';
+        modal.open(title, `${desc} (${tag})`);
+      });
+    });
+
+    // Resume view/download (demo)
+    function generateResumeBlob() {
+      const content = `
+Shayan — Resume
+
+Skills:
+• Figma (Expert)
+• Photoshop (Expert)
+• Rive (Expert)
+• Spline (Beginner)
+• Blender (Coming Soon)
+• Adobe Illustrator (Coming Soon)
+
+Projects:
+• Mobile Banking UI — Figma system & flows
+• Onboarding Animation — Rive interactive
+• Hero 3D Header — Spline interactive
+
+Contact:
+• Email: your@email.com
+      `.trim();
+      return new Blob([content], { type: 'application/pdf' });
+    }
+    const resumeBtn = document.getElementById('resumeBtn');
+    if (resumeBtn) {
+      resumeBtn.addEventListener('click', () => {
+        const url = URL.createObjectURL(generateResumeBlob());
+        window.open(url, '_blank');
+        setTimeout(() => URL.revokeObjectURL(url), 10000);
+      });
+    }
+    const downloadResume = document.getElementById('downloadResume');
+    if (downloadResume) {
+      downloadResume.addEventListener('click', () => {
+        const url = URL.createObjectURL(generateResumeBlob());
+        const a = document.createElement('a');
+        a.href = url; a.download = 'Shayan-Resume.pdf';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 10000);
+      });
+    }
+
+    // Demo contact
+    const cForm = document.getElementById('contactForm');
+    if (cForm) {
+      cForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const note = document.getElementById('formNote');
+        note.textContent = 'Thanks! Your message was captured locally (demo only).';
+        note.classList.remove('text-white/60');
+        note.classList.add('text-white');
+        cForm.reset();
+        setTimeout(() => {
+          note.textContent = 'Demo only — not sending.';
+          note.classList.add('text-white/60');
+        }, 3500);
+      });
+    }
+  </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97f33ad261547f0d',t:'MTc1Nzg4Nzk4Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

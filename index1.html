@@ -1,0 +1,3595 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Iconique</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@rive-app/canvas@2.7.0"></script>
+
+<style>
+  :root{
+    --bg-very-dark: #03060a00;
+    --panel-padding: 36px;
+    --corner-offset: 6px;
+    --primary-blue: #2ea1ff;
+    --secondary-blue: #0e6cff;
+    --dark-blue: #074bd1;
+  }
+.pricing-card.featured {
+  position: relative; /* حتما باشه */
+  overflow: visible; /* خیلی مهم */
+}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior: smooth;}
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+ /* Animated background glow effects */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    pointer-events: none;
+    z-index: -1;
+    will-change: transform;
+  }
+  ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.726);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--primary-blue), var(--secondary-blue));
+    border-radius: 4px;
+    transition: all 0.3s ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--secondary-blue), var(--dark-blue));
+    box-shadow: 0 0 10px rgba(43, 43, 43, 0.5);
+  }
+
+  /* Firefox scrollbar */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-blue) rgba(0, 0, 0, 0.651);
+  }
+  body{
+    font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background:
+      radial-gradient(1200px 600px at 50% 20%, #121212, transparent 20%),
+      linear-gradient(180deg, #121212 0%, #121212 35%, #121212 100%);
+    color: #fff;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+  @keyframes glowMove1 {
+    0% { 
+      --glow-x: 15%; 
+      --glow-y: 25%; 
+    }
+    20% { 
+      --glow-x: 35%; 
+      --glow-y: 15%; 
+    }
+    40% { 
+      --glow-x: 75%; 
+      --glow-y: 35%; 
+    }
+    60% { 
+      --glow-x: 85%; 
+      --glow-y: 75%; 
+    }
+    80% { 
+      --glow-x: 25%; 
+      --glow-y: 85%; 
+    }
+    100% { 
+      --glow-x: 15%; 
+      --glow-y: 25%; 
+    }
+  }
+
+  @keyframes glowMove2 {
+    0% { 
+      --glow2-x: 85%; 
+      --glow2-y: 75%; 
+    }
+    20% { 
+      --glow2-x: 65%; 
+      --glow2-y: 15%; 
+    }
+    40% { 
+      --glow2-x: 25%; 
+      --glow2-y: 25%; 
+    }
+    60% { 
+      --glow2-x: 15%; 
+      --glow2-y: 65%; 
+    }
+    80% { 
+      --glow2-x: 75%; 
+      --glow2-y: 85%; 
+    }
+    100% { 
+      --glow2-x: 85%; 
+      --glow2-y: 75%; 
+    }
+  }
+
+  @keyframes glowMove3 {
+    0% { 
+      --glow3-x: 55%; 
+      --glow3-y: 15%; 
+    }
+    20% { 
+      --glow3-x: 25%; 
+      --glow3-y: 35%; 
+    }
+    40% { 
+      --glow3-x: 15%; 
+      --glow3-y: 75%; 
+    }
+    60% { 
+      --glow3-x: 65%; 
+      --glow3-y: 85%; 
+    }
+    80% { 
+      --glow3-x: 85%; 
+      --glow3-y: 45%; 
+    }
+    100% { 
+      --glow3-x: 55%; 
+      --glow3-y: 15%; 
+    }
+  }
+
+  /* Navigation */
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 800px;
+    padding: 12px 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(25px);
+    background: rgba(3,6,10,0.85);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 50px;
+    z-index: 100;
+    transition: all 0.4s ease;
+    margin-top: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.144);
+    animation: navSlideDown 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+
+  }
+
+  @keyframes navSlideDown {
+    0% {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-100px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  }
+
+  .nav.scrolled {
+    padding: 10px 25px;
+    background: rgba(3,6,10,0.92);
+    backdrop-filter: blur(30px);
+    margin-top: 10px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  }
+
+  .logo {
+    display: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 25px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 8px 12px;
+    border-radius: 20px;
+  }
+
+  .nav-links a::before {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-blue), var(--secondary-blue));
+    border-radius: 1px;
+    transition: width 0.3s ease;
+  }
+
+  .nav-links a:hover {
+    color: white;
+  }
+
+  .nav-links a:hover::before {
+    width: 80%;
+  }
+
+  .nav-links a.active {
+    color: white;
+  }
+
+  .nav-links a.active::before {
+    width: 0;
+  }
+
+  .nav.at-top {
+    border: 1px solid transparent;
+    background: transparent;
+    backdrop-filter: none;
+  }
+
+  .mobile-menu {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+  }
+
+  .mobile-menu span {
+    width: 25px;
+    height: 3px;
+    background: white;
+    margin: 3px 0;
+    transition: 0.3s;
+  }
+
+  /* Page Sections */
+  .page-section {
+    display: none;
+    width: 100%;
+    min-height: calc(100vh - 200px);
+    padding-top: 100px;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+  }
+
+  .page-section.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+    z-index: 10;
+    animation: pageEnter 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .page-section.exiting {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.98);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes pageEnter {
+    0% {
+      opacity: 0;
+      transform: translateY(50px) scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Page transition animations */
+  .page-slide-left {
+    animation: slideInFromLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .page-slide-right {
+    animation: slideInFromRight 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .page-fade-up {
+    animation: fadeInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes slideInFromLeft {
+    0% {
+      opacity: 0;
+      transform: translateX(-100px) scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+  }
+
+  @keyframes slideInFromRight {
+    0% {
+      opacity: 0;
+      transform: translateX(100px) scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+  }
+
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(80px) scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Hero Section */
+  .hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 140px 24px 80px;
+    text-align: center;
+  }
+
+  .wrap{ 
+    width:100%; 
+    max-width:1080px; 
+    margin-top:40px; 
+  }
+
+  .animate-in {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: slideInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .animate-in:nth-child(1) { animation-delay: 0.1s; }
+  .animate-in:nth-child(2) { animation-delay: 0.2s; }
+  .animate-in:nth-child(3) { animation-delay: 0.3s; }
+  .animate-in:nth-child(4) { animation-delay: 0.4s; }
+  .animate-in:nth-child(5) { animation-delay: 0.5s; }
+
+
+  @keyframes slideInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  h1{
+    font-weight:800;
+    font-size: clamp(42px, 8.6vw, 96px);
+    line-height:0.98;
+    margin-bottom: 18px;
+    color: white;
+  }
+  h1 span{ 
+    display:block; 
+    color: white !important;
+  }
+
+  .highlight {
+    background: linear-gradient(45deg, #074bd1, #0e6cff, #2ea1ff, #54a0ff, #74b9ff);
+    background-size: 400% 400%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 3s ease-in-out infinite;
+    position: relative;
+    display: inline-block;
+  }
+
+  .highlight::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: linear-gradient(45deg, #074bd1, #0e6cff, #2ea1ff, #54a0ff, #74b9ff);
+    background-size: 400% 400%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 3s ease-in-out infinite;
+    filter: blur(8px);
+    opacity: 0.3;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+   .highlight {
+     color: black; /* رنگ متن */
+     opacity: 1 !important;
+     visibility: visible !important;
+     margin-bottom: 50px;
+   }
+
+  .sub{
+    max-width:680px;
+    margin: 0 auto 28px;
+    color: rgba(180,190,200,0.7);
+    font-weight:300;
+    font-size:18px;
+    line-height:1.7;
+  }
+
+  .cta{
+    display:inline-block;
+    margin: 18px 12px;
+    padding: 14px 34px;
+    border-radius:40px;
+    font-weight:600;
+    font-size:18px;
+    text-decoration:none;
+    background: linear-gradient(180deg, var(--primary-blue) 0%, var(--secondary-blue) 60%, var(--dark-blue) 100%);
+    color:white;
+    position:relative;
+    box-shadow: 0 8px 30px rgba(11,109,255,0.32), inset 0 1px 0 rgba(255,255,255,0.06);
+    transition: transform .14s ease, box-shadow .14s ease;
+    z-index:30;
+    cursor: pointer;
+    border: none;
+  }
+
+  .cta-secondary {
+    background: transparent;
+    border: 2px solid rgba(46,161,255,0.4);
+    box-shadow: none;
+  }
+
+  .cta::after{
+    content:"";
+    position:absolute; left:50%; transform:translateX(-50%); bottom:-20px;
+    width:92%; height:24px; border-radius:40px; filter: blur(18px);
+    background: linear-gradient(90deg, rgba(21,153,255,0.22), rgba(9,88,255,0.12)); z-index:-1;
+  }
+
+  .cta:hover{
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 
+      0 25px 70px rgba(11,109,255,0.5),
+      0 0 40px rgba(46,161,255,0.3),
+      inset 0 2px 0 rgba(255,255,255,0.1);
+    animation: buttonPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes buttonPulse {
+    0%, 100% {
+      box-shadow: 
+        0 25px 70px rgba(11,109,255,0.5),
+        0 0 40px rgba(46,161,255,0.3),
+        inset 0 2px 0 rgba(255,255,255,0.1);
+    }
+    50% {
+      box-shadow: 
+        0 30px 80px rgba(11,109,255,0.7),
+        0 0 60px rgba(46,161,255,0.5),
+        inset 0 2px 0 rgba(255,255,255,0.15);
+    }
+  }
+  .cta:active{ 
+    transform: translateY(1px) scale(.998);
+    transition: all 0.1s ease;
+  }
+
+  /* Icon Showcase */
+  .showcase {
+    margin-top: 80px;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    animation: float 6s ease-in-out infinite;
+  }
+
+  /* Cursor Glow Effect */
+  .glow-container {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .glow-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(300px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+      rgba(46,161,255,0.15), 
+      rgba(46,161,255,0.08) 40%, 
+      transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+    border-radius: inherit;
+  }
+
+  .glow-container:hover::before {
+    opacity: 1;
+  }
+.spline-interactive-bg {
+      position: fixed; inset: 0; z-index: 0; width: 114%; height: 100%;
+    }
+  .glow-container > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .card{
+    position:relative;
+    width:900px;
+    max-width:92vw;
+    height:500px;
+    border-radius:18px;
+    overflow: hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:0;
+  }
+
+  .card::before{
+    content:"";
+    position:absolute;
+    left:50%; top:50%; transform:translate(-50%,-50%);
+    width:140%; height:140%;
+    background: radial-gradient(closest-side, rgba(10,140,255,0.12), rgba(10,120,255,0.06) 30%, transparent 45%);
+    filter: blur(28px);
+    z-index:-2;
+    mix-blend-mode: screen;
+  }
+
+  .card::after{
+    content:"";
+    position:absolute;
+    right: calc(-18%);
+    bottom: calc(-24%);
+    width:80%;
+    height:80%;
+    border-radius:50%;
+    background: radial-gradient(closest-side,
+      rgba(6,150,255,0.46),
+      rgba(8,120,255,0.30) 30%,
+      rgba(6,100,255,0.12) 50%,
+      transparent 75%);
+    filter: blur(48px);
+    z-index:-3;
+    mix-blend-mode: screen;
+  }
+
+  .card-panel{
+    width:100%;
+    height:100%;
+    border-radius:18px;
+    padding: var(--panel-padding);
+    background: linear-gradient(135deg, rgba(15,25,35,0.9), rgba(8,15,25,0.95));
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(20px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .card-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+      rgba(46,161,255,0.15), 
+      rgba(46,161,255,0.08) 40%, 
+      transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+    z-index: 0;
+    border-radius: inherit;
+  }
+
+  .card-panel:hover::before {
+    opacity: 1;
+  }
+
+  .card-panel > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .icon-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    margin-bottom: 30px;
+  }
+
+  .icon-grid .icon-item {
+    animation: iconFloat 4s ease-in-out infinite;
+  }
+
+  .icon-grid .icon-item:nth-child(1) { animation-delay: 0s; }
+  .icon-grid .icon-item:nth-child(2) { animation-delay: 0.5s; }
+  .icon-grid .icon-item:nth-child(3) { animation-delay: 1s; }
+  .icon-grid .icon-item:nth-child(4) { animation-delay: 1.5s; }
+  .icon-grid .icon-item:nth-child(5) { animation-delay: 2s; }
+  .icon-grid .icon-item:nth-child(6) { animation-delay: 2.5s; }
+  .icon-grid .icon-item:nth-child(7) { animation-delay: 3s; }
+  .icon-grid .icon-item:nth-child(8) { animation-delay: 3.5s; }
+
+  @keyframes iconFloat {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    25% {
+      transform: translateY(-5px) rotate(1deg);
+    }
+    75% {
+      transform: translateY(5px) rotate(-1deg);
+    }
+  }
+
+  .icon-item {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, rgba(46,161,255,0.2), rgba(14,108,255,0.1));
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(46,161,255,0.3);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .icon-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.6s ease;
+  }
+
+  .icon-item::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(46,161,255,0.3), transparent 70%);
+    border-radius: 50%;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: -1;
+  }
+
+  .icon-item:hover {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 
+      0 20px 50px rgba(46,161,255,0.4),
+      0 0 30px rgba(46,161,255,0.2),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+    background: linear-gradient(135deg, rgba(46,161,255,0.4), rgba(14,108,255,0.3));
+    border-color: rgba(46,161,255,0.6);
+  }
+
+  .icon-item:hover::before {
+    left: 100%;
+  }
+
+  .icon-item:hover::after {
+    width: 120px;
+    height: 120px;
+  }
+
+  .icon-svg {
+    width: 40px;
+    height: 40px;
+    fill: var(--primary-blue);
+  }
+
+  .icon-price {
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    background: var(--primary-blue);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(46,161,255,0.4);
+    z-index: 10;
+    min-width: 28px;
+    text-align: center;
+  }
+
+  .showcase-text {
+    text-align: center;
+    color: rgba(255,255,255,0.8);
+    font-size: 16px;
+    font-weight: 300;
+  }
+
+  /* Features Section */
+  .features {
+    padding: 120px 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    margin-top: 60px;
+  }
+
+  .features-grid .feature-card {
+    opacity: 0;
+    transform: translateY(80px) scale(0.8);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .features-grid .feature-card.animate {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .features-grid .feature-card:nth-child(1).animate { transition-delay: 0.1s; }
+  .features-grid .feature-card:nth-child(2).animate { transition-delay: 0.3s; }
+  .features-grid .feature-card:nth-child(3).animate { transition-delay: 0.5s; }
+
+  @keyframes cardSlideIn {
+    0% {
+      opacity: 0;
+      transform: translateY(50px) scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .feature-card {
+    background: linear-gradient(135deg, rgba(15,25,35,0.6), rgba(8,15,25,0.8));
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 40px 30px;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+      rgba(46,161,255,0.15), 
+      rgba(46,161,255,0.08) 40%, 
+      transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 0;
+  }
+
+  .feature-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-15px) scale(1.02);
+    box-shadow: 
+      0 20px 50px rgba(46,161,255,0.2),
+      0 0 30px rgba(46,161,255,0.1),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+    border-color: rgba(46,161,255,0.3);
+  }
+
+  .feature-card:hover::before {
+    opacity: 1;
+  }
+
+
+  .feature-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #fff;
+  }
+
+  .feature-desc {
+    color: rgba(180,190,200,0.7);
+    line-height: 1.6;
+  }
+
+  .section-title {
+    text-align: center;
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    opacity: 0;
+    transform: translateY(50px) scale(0.9);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .section-title.animate {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .section-subtitle {
+    text-align: center;
+    color: rgba(180,190,200,0.7);
+    font-size: 18px;
+    max-width: 600px;
+    margin: 0 auto;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    transition-delay: 0.2s;
+  }
+
+  .section-subtitle.animate {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+
+
+  /* Icons Page */
+  .icons-page {
+    padding: 120px 24px 80px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .search-bar {
+    max-width: 600px;
+    margin: 40px auto;
+    position: relative;
+  }
+ 
+  .search-input {
+    width: 100%;
+    padding: 16px 50px 16px 20px;
+    background: rgba(15,25,35,0.8);
+    background: rgba(15,25,35,0.8);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    outline: none;
+  }
+
+  .search-input::placeholder {
+    color: rgba(255,255,255,0.5);
+  }
+
+  .search-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--primary-blue);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    height: 34px;
+    width: 34px;
+    padding-left: 0px;
+
+  }
+.search-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.search-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+  .filter-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 40px 0;
+    flex-wrap: wrap;
+  }
+
+  .filter-tab {
+    padding: 10px 20px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 25px;
+    color: rgba(255,255,255,0.7);
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .filter-tab::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(46,161,255,0.3), transparent);
+    transition: left 0.6s ease;
+  }
+
+  .filter-tab:hover::before {
+    left: 100%;
+  }
+
+  .filter-tab.active, .filter-tab:hover {
+    background: var(--primary-blue);
+    color: white;
+    border-color: var(--primary-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(46,161,255,0.4);
+  }
+
+  .filter-tab.active {
+    animation: tabActivate 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes tabActivate {
+    0% {
+      transform: translateY(-2px) scale(1);
+    }
+    50% {
+      transform: translateY(-4px) scale(1.05);
+    }
+    100% {
+      transform: translateY(-2px) scale(1);
+    }
+  }
+
+  .icons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 30px;
+    margin-top: 60px;
+  }
+
+  .icon-card {
+    background: linear-gradient(135deg, rgba(15,25,35,0.8), rgba(8,15,25,0.9));
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 30px 20px 20px;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(50px) scale(0.8);
+    animation: iconCardSlideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .icon-card:nth-child(1) { animation-delay: 0.1s; }
+  .icon-card:nth-child(2) { animation-delay: 0.15s; }
+  .icon-card:nth-child(3) { animation-delay: 0.2s; }
+  .icon-card:nth-child(4) { animation-delay: 0.25s; }
+  .icon-card:nth-child(5) { animation-delay: 0.3s; }
+  .icon-card:nth-child(6) { animation-delay: 0.35s; }
+  .icon-card:nth-child(7) { animation-delay: 0.4s; }
+  .icon-card:nth-child(8) { animation-delay: 0.45s; }
+  .icon-card:nth-child(9) { animation-delay: 0.5s; }
+  .icon-card:nth-child(10) { animation-delay: 0.55s; }
+  .icon-card:nth-child(11) { animation-delay: 0.6s; }
+  .icon-card:nth-child(12) { animation-delay: 0.65s; }
+
+  @keyframes iconCardSlideIn {
+    0% {
+      opacity: 0;
+      transform: translateY(50px) scale(0.8);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .icon-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+      rgba(46,161,255,0.15), 
+      rgba(46,161,255,0.08) 40%, 
+      transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 0;
+  }
+
+  .icon-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(46,161,255,0.1), transparent 70%);
+    opacity: 0;
+    transition: all 0.6s ease;
+    z-index: 0;
+  }
+
+  .icon-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .icon-card:hover {
+    transform: translateY(-15px) scale(1.02);
+    box-shadow: 
+      0 25px 60px rgba(46,161,255,0.3),
+      0 0 40px rgba(46,161,255,0.15),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+    border-color: rgba(46,161,255,0.4);
+    background: linear-gradient(135deg, rgba(15,25,35,0.9), rgba(8,15,25,0.95));
+  }
+
+  .icon-card:hover::before {
+    opacity: 1;
+  }
+
+  .icon-card:hover::after {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+
+  .icon-card-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background: linear-gradient(135deg, rgba(46,161,255,0.2), rgba(14,108,255,0.1));
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(46,161,255,0.3);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .icon-card-icon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.6s ease;
+  }
+
+  .icon-card:hover .icon-card-icon {
+    transform: scale(1.1);
+    background: linear-gradient(135deg, rgba(46,161,255,0.4), rgba(14,108,255,0.3));
+    border-color: rgba(46,161,255,0.6);
+    box-shadow: 0 10px 30px rgba(46,161,255,0.3);
+  }
+
+  .icon-card:hover .icon-card-icon::before {
+    left: 100%;
+  }
+
+  .icon-card-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: white;
+  }
+
+  .icon-card-price {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--primary-blue);
+    margin-bottom: 15px;
+  }
+
+  .icon-card-btn {
+    width: 100%;
+    padding: 10px;
+    background: var(--primary-blue);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .icon-card-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .icon-card-btn:hover {
+    background: var(--secondary-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(46,161,255,0.4);
+  }
+
+  .icon-card-btn:hover::before {
+    left: 100%;
+  }
+
+  /* Empty State */
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: rgba(255,255,255,0.6);
+    grid-column: 1 / -1;
+    opacity: 0;
+    transform: translateY(50px) scale(0.9);
+    animation: emptyStateSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes emptyStateSlideIn {
+    0% {
+      opacity: 0;
+      transform: translateY(50px) scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+
+
+  @keyframes emptyStateShimmer {
+    0% {
+      left: -100%;
+    }
+    100% {
+      left: 100%;
+    }
+  }
+
+  .empty-state h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 15px;
+  }
+
+  .empty-state p {
+    font-size: 16px;
+    line-height: 1.6;
+    max-width: 400px;
+    margin: 0 auto 30px;
+  }
+
+  .empty-state-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background: var(--primary-blue);
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+  }
+
+  .empty-state-btn:hover {
+    background: var(--secondary-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(46,161,255,0.4);
+  }
+
+  /* Pricing Page */
+  .pricing-page {
+    padding: 120px 24px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    margin-top: 60px;
+  }
+
+  .pricing-card {
+    background: linear-gradient(135deg, rgba(15,25,35,0.8), rgba(8,15,25,0.9));
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 40px 30px;
+    text-align: center;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+
+  .pricing-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+      rgba(46,161,255,0.15), 
+      rgba(46,161,255,0.08) 40%, 
+      transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 0;
+  }
+
+  .pricing-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .pricing-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 
+      0 25px 60px rgba(46,161,255,0.2),
+      0 0 40px rgba(46,161,255,0.1),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+    border-color: rgba(46,161,255,0.3);
+  }
+
+  .pricing-card:hover::before {
+    opacity: 1;
+  }
+
+  .pricing-card.featured {
+    border-color: var(--primary-blue);
+    transform: scale(1.05);
+    position: relative;
+  }
+
+  .pricing-card.featured::after {
+    content: 'Most Popular';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary-blue);
+    color: white;
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    z-index: 10;
+  }
+
+  .pricing-card.featured:hover {
+    transform: translateY(-10px) scale(1.07);
+  }
+
+  .pricing-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .pricing-price {
+    font-size: 48px;
+    font-weight: 800;
+    color: var(--primary-blue);
+    margin-bottom: 20px;
+    text-shadow: 0 0 20px rgba(46,161,255,0.5);
+    animation: priceGlow 3s ease-in-out infinite;
+  }
+
+  @keyframes priceGlow {
+    0%, 100% {
+      text-shadow: 0 0 20px rgba(46,161,255,0.5);
+    }
+    50% {
+      text-shadow: 0 0 30px rgba(46,161,255,0.8), 0 0 40px rgba(46,161,255,0.3);
+    }
+  }
+
+  .pricing-features {
+    list-style: none;
+    margin-bottom: 30px;
+  }
+
+  .pricing-features li {
+    padding: 8px 0;
+    color: rgba(255,255,255,0.8);
+  }
+
+  .pricing-features li::before {
+    content: '✓';
+    color: var(--primary-blue);
+    font-weight: bold;
+    margin-right: 10px;
+  }
+
+  /* About Page */
+  .about-page {
+    padding: 120px 24px 80px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .about-content {
+    margin-top: 60px;
+    line-height: 1.8;
+    font-size: 18px;
+    color: rgba(255,255,255,0.8);
+  }
+
+  .about-content h3 {
+    color: white;
+    font-size: 24px;
+    margin: 40px 0 20px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    margin: 60px 0;
+  }
+
+  .stat-item {
+    text-align: center;
+    padding: 30px 20px;
+    background: linear-gradient(135deg, rgba(15,25,35,0.6), rgba(8,15,25,0.8));
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.1);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .stat-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+      rgba(46,161,255,0.15), 
+      rgba(46,161,255,0.08) 40%, 
+      transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 0;
+  }
+
+  .stat-item:hover::before {
+    opacity: 1;
+  }
+
+  .stat-item > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .stat-number {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--primary-blue);
+    display: block;
+    text-shadow: 0 0 15px rgba(46,161,255,0.6);
+    animation: statGlow 4s ease-in-out infinite;
+  }
+
+  @keyframes statGlow {
+    0%, 100% {
+      text-shadow: 0 0 15px rgba(46,161,255,0.6);
+    }
+    50% {
+      text-shadow: 0 0 25px rgba(46,161,255,0.9), 0 0 35px rgba(46,161,255,0.4);
+    }
+  }
+
+  .stat-label {
+    color: rgba(255,255,255,0.7);
+    margin-top: 8px;
+  }
+
+  /* Creator Page */
+  .creator-page {
+    padding: 120px 24px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .creator-hero {
+    margin: 60px 0;
+  }
+
+  .creator-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    margin: 40px 0;
+  }
+
+  .creator-stat {
+    text-align: center;
+    padding: 30px 20px;
+    background: linear-gradient(135deg, rgba(15,25,35,0.8), rgba(8,15,25,0.9));
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .creator-stat::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+      rgba(46,161,255,0.15), 
+      rgba(46,161,255,0.08) 40%, 
+      transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 0;
+  }
+
+  .creator-stat:hover::before {
+    opacity: 1;
+  }
+
+  .creator-stat > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .creator-stat:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(46,161,255,0.2);
+    border-color: rgba(46,161,255,0.3);
+  }
+
+  .creator-benefits {
+    margin: 80px 0;
+  }
+
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+  }
+
+  .benefit-card {
+    background: linear-gradient(135deg, rgba(15,25,35,0.8), rgba(8,15,25,0.9));
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 30px 25px;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .benefit-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+      rgba(46,161,255,0.15), 
+      rgba(46,161,255,0.08) 40%, 
+      transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 0;
+  }
+
+  .benefit-card:hover::before {
+    opacity: 1;
+  }
+
+  .benefit-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .benefit-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(46,161,255,0.2);
+    border-color: rgba(46,161,255,0.3);
+  }
+
+  .benefit-icon {
+    font-size: 48px;
+    margin-bottom: -20px;
+    display: block;
+  }
+  
+  .benefit-icon1 {
+    font-size: 48px;
+  
+    display: block;
+  }
+  .benefit-icon2 {
+      font-size: 48px;
+      margin-top: 30px;
+      display: block;
+  }
+  .benefit-card h4 {
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+  }
+
+  .benefit-card p {
+    color: rgba(255,255,255,0.8);
+    line-height: 1.6;
+  }
+
+  .creator-application {
+    margin: 80px 0;
+  }
+
+  .application-form {
+    background: linear-gradient(135deg, rgba(15,25,35,0.8), rgba(8,15,25,0.9));
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 40px;
+    margin-top: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .application-form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+      rgba(46,161,255,0.15), 
+      rgba(46,161,255,0.08) 40%, 
+      transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 0;
+  }
+
+  .application-form:hover::before {
+    opacity: 1;
+  }
+
+  .application-form > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 25px;
+  }
+
+  .checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+  }
+
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    color: rgba(255,255,255,0.8);
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+  }
+
+  .checkbox-label:hover {
+    background: rgba(46,161,255,0.1);
+  }
+
+  .checkbox-label input[type="checkbox"] {
+    margin-right: 10px;
+    accent-color: var(--primary-blue);
+  }
+
+  .file-upload {
+    border: 2px dashed rgba(255,255,255,0.3);
+    border-radius: 12px;
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(15,25,35,0.5);
+  }
+
+  .file-upload:hover {
+    border-color: var(--primary-blue);
+    background: rgba(46,161,255,0.05);
+  }
+
+  .upload-content {
+    color: rgba(255,255,255,0.8);
+  }
+
+  .upload-icon {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 15px;
+  }
+
+  .upload-content p {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .upload-content small {
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
+  }
+
+  .creator-faq {
+    margin: 80px 0;
+  }
+
+  .faq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+  }
+
+  .faq-item {
+    background: linear-gradient(135deg, rgba(15,25,35,0.6), rgba(8,15,25,0.8));
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 30px 25px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .faq-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+      rgba(46,161,255,0.15), 
+      rgba(46,161,255,0.08) 40%, 
+      transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 0;
+  }
+
+  .faq-item:hover::before {
+    opacity: 1;
+  }
+
+  .faq-item > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .faq-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(46,161,255,0.15);
+    border-color: rgba(46,161,255,0.3);
+  }
+
+  .faq-item h4 {
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+  }
+
+  .faq-item p {
+    color: rgba(255,255,255,0.8);
+    line-height: 1.6;
+  }
+
+  /* Contact Page */
+  .contact-page {
+    padding: 120px 24px 80px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .contact-form {
+    margin-top: 60px;
+    background: linear-gradient(135deg, rgba(15,25,35,0.8), rgba(8,15,25,0.9));
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .contact-form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+      rgba(46,161,255,0.15), 
+      rgba(46,161,255,0.08) 40%, 
+      transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 0;
+  }
+
+  .contact-form:hover::before {
+    opacity: 1;
+  }
+
+  .contact-form > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .form-group {
+    margin-bottom: 25px;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 8px;
+    color: white;
+    font-weight: 600;
+  }
+
+  .form-input, .form-textarea {
+    width: 100%;
+    padding: 15px;
+    background: rgba(15,25,35,0.8);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    color: white;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+
+  .form-input:focus, .form-textarea:focus {
+    border-color: var(--primary-blue);
+  }
+
+  .form-textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .form-input::placeholder, .form-textarea::placeholder {
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* Slide-out Sidebar */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -400px;
+    width: 400px;
+    height: 100vh;
+    background: rgba(3,6,10,0.3);
+    backdrop-filter: blur(40px);
+    border-right: 1px solid rgba(46,161,255,0.3);
+    z-index: 2000;
+    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    box-shadow: 0 0 50px rgba(0,0,0,0.5);
+  }
+
+  .sidebar.active {
+    left: 0;
+  }
+
+  .sidebar-content {
+    padding: 40px 30px;
+  }
+
+  .sidebar-logo {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--primary-blue);
+    margin-bottom: 15px;
+    text-shadow: 0 0 20px rgba(46,161,255,0.5);
+  }
+
+  .sidebar-tagline {
+    color: rgba(255,255,255,0.7);
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+  }
+  .sidebar-tagline1 {
+    color: rgba(30, 154, 255, 0.7);
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+  }
+
+  .sidebar-section {
+    margin-bottom: 35px;
+  }
+
+  .sidebar-section h4 {
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .sidebar-links {
+    list-style: none;
+  }
+
+  .sidebar-links li {
+    margin-bottom: 8px;
+  }
+
+  .sidebar-links a {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    font-size: 14px;
+    display: block;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .sidebar-links a:hover {
+    color: white;
+    background: rgba(46,161,255,0.1);
+    transform: translateX(5px);
+  }
+
+  .sidebar-links a::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 0;
+    background: var(--primary-blue);
+    border-radius: 2px;
+    transition: height 0.3s ease;
+  }
+
+  .sidebar-links a:hover::before {
+    height: 20px;
+  }
+
+  .sidebar-trigger {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 30px;
+    height: 100vh;
+    z-index: 1500;
+    cursor: pointer;
+    background: transparent;
+  }
+
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    z-index: 1900;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .sidebar-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.7);
+    font-size: 24px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  .sidebar-close:hover {
+    color: white;
+    background: rgba(255,255,255,0.1);
+  }
+
+  /* Footer */
+  .footer {
+    background: rgba(3,6,10,0.9);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding: 60px 24px 30px;
+    margin-top: 100px;
+  }
+
+  .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+  }
+
+  .footer-section h4 {
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  .footer-section p, .footer-section a {
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    line-height: 1.6;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .footer-section a:hover {
+    color: var(--primary-blue);
+  }
+
+  .footer-bottom {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 20px;
+    color: rgba(255, 255, 255, 0.082);
+  }
+
+  /* Modal */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal.active {
+    display: flex;
+  }
+
+  .modal-content {
+    background: linear-gradient(135deg, rgba(15,25,35,0.95), rgba(8,15,25,0.98));
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    position: relative;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.7);
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  .modal-close:hover {
+    color: white;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .nav {
+      padding: 12px 20px;
+      width: 95%;
+      border-radius: 40px;
+    }
+    
+    .nav.scrolled {
+      padding: 10px 18px;
+    }
+    
+    .nav-links {
+      display: none;
+      position: absolute;
+      top: calc(100% + 10px);
+      left: 0;
+      width: 100%;
+      background: rgba(41, 41, 41, 0.95);
+      backdrop-filter: blur(25px);
+      flex-direction: column;
+      padding: 20px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    
+    .nav-links.active {
+      display: flex;
+    }
+    
+    .nav-links a {
+      padding: 12px 16px;
+      margin: 4px 0;
+      border-radius: 12px;
+    }
+    
+    .mobile-menu {
+      display: flex;
+    }
+    
+    .icon-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    
+    .icon-item {
+      width: 60px;
+      height: 60px;
+    }
+    
+    .icon-svg {
+      width: 30px;
+      height: 30px;
+    }
+
+    .icons-grid {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 20px;
+    }
+
+    .pricing-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .pricing-card.featured {
+      transform: none;
+    }
+
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+
+    .checkbox-group {
+      grid-template-columns: 1fr;
+    }
+
+    .creator-stats {
+      grid-template-columns: 1fr;
+    }
+
+    .benefits-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .faq-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  /* برای جلوگیری از تغییر رنگ متن و پس‌زمینه در پیشنهادات کروم */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-text-fill-color: #fff !important; /* رنگ متن */
+    box-shadow: 0 0 0px 1000px #0e1625 inset !important; /* رنگ پس‌زمینه هم‌رنگ سایتت */
+    transition: background-color 5000s ease-in-out 0s !important;
+}
+
+/* برای فایرفاکس */
+input:-moz-autofill {
+    -moz-text-fill-color: #fff !important;
+    box-shadow: 0 0 0px 1000px #0e1625 inset !important;
+}
+
+/* استایل برای لیست دراپ‌داون پیشنهادات مرورگر */
+input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+/* تغییر رنگ انتخاب آیتم‌ها در لیست پیشنهادات */
+input::-webkit-contacts-auto-fill-button,
+input::-webkit-credentials-auto-fill-button {
+    display: none !important;
+}
+
+</style>
+
+</head>
+ <div class="spline-interactive-bg">
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.10.57/build/spline-viewer.js"></script>
+    <spline-viewer url="https://prod.spline.design/jSBk6RuiTSg4colh/scene.splinecode"></spline-viewer>
+  </div>
+
+<script src="https://unpkg.com/rive-js@0.9.1"></script>
+<script>
+
+</script>
+
+<body>
+  <!-- Sidebar Trigger -->
+  <div class="sidebar-trigger" onmouseenter="openSidebar()" onmouseleave="scheduleCloseSidebar()"></div>
+  
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+  
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar" onmouseenter="clearTimeout(sidebarTimeout)" onmouseleave="scheduleCloseSidebar()">
+    <button class="sidebar-close" onclick="closeSidebar()">&times;</button>
+    <div class="sidebar-content">
+      <div class="sidebar-logo"><script src="https://unpkg.com/@rive-app/canvas"></script>
+                <canvas id="shayan" width="30" height="30"></canvas>
+                <script>
+                  const rriveInstance = new rive.Rive({
+                    src: 'iq.riv', // path to your file
+                    canvas: document.getElementById('shayan'),
+                    autoplay: true,
+                    stateMachines: ['State Machine 1'], // name from Rive editor
+                    onLoad: () => {
+                      const inputs = rriveInstance.stateMachineInputs('State Machine 1');
+                      const hoverInput = inputs.find(i => i.name === 'hover');
+                      const clickTrigger = inputs.find(i => i.name === 'clicked');
+                
+                      // Hover event
+                      document.getElementById('shayan').addEventListener('mouseenter', () => {
+                        hoverInput.value = true;
+                      });
+                      document.getElementById('shayan').addEventListener('mouseleave', () => {
+                        hoverInput.value = false;
+                      });
+                
+                      // Click event
+                      document.getElementById('shayan').addEventListener('click', () => {
+                        clickTrigger.fire();
+                      });
+                    }
+                  });
+                </script></div>
+      <p class="sidebar-tagline">The world's first marketplace for exclusive, never-seen-before, Iconique was created by a small one-person team.
+      <p class="sidebar-tagline1"> And remember, this is just the beginning of the journey. </p>
+      
+      <div class="sidebar-section">
+        <h4>Quick Links</h4>
+        <ul class="sidebar-links">
+          <li><a href="#" onclick="showPage('home'); closeSidebar();">Home</a></li>
+          <li><a href="#" onclick="showPage('icons'); closeSidebar();">Browse Icons</a></li>
+          <li><a href="#" onclick="showPage('pricing'); closeSidebar();">Pricing</a></li>
+          <li><a href="#" onclick="showPage('about'); closeSidebar();">About Us</a></li>
+        </ul>
+      </div>
+      
+      <div class="sidebar-section">
+        <h4>Support</h4>
+        <ul class="sidebar-links">
+          <li><a href="#" onclick="showPage('contact'); closeSidebar();">Contact Us</a></li>
+          <li><a href="#" onclick="showModal('help'); closeSidebar();">Help Center</a></li>
+          <li><a href="#" onclick="showModal('license'); closeSidebar();">License Terms</a></li>
+          <li><a href="#" onclick="showModal('privacy'); closeSidebar();">Privacy Policy</a></li>
+        </ul>
+      </div>
+      
+      <div class="sidebar-section">
+        <h4>Connect</h4>
+        <ul class="sidebar-links">
+          <li><a href="social-contact.html" onclick="closeSidebar();">social contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="nav at-top" id="navbar">
+    <div class="logo" onclick="showPage('home')">Iconique</div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#" onclick="showPage('home')" class="nav-link active">
+        <!-- 1) لایبرری Rive (Canvas runtime) -->
+<script src="https://unpkg.com/@rive-app/canvas"></script>
+
+<script>
+(() => {
+  function initIcon(el) {
+    const src = iq.rive;                         // مثلاً "home-icon.riv"
+    const sm  = el.dataset.sm || "State Machine 1";      // اسم State Machine (اختیاری)
+    const clickInput = el.dataset.inputClick || "click"; // اسم تریگر کلیک (اختیاری)
+
+    if (!src) {
+      console.warn("data-rive خالیه برای:", el);
+      return;
+    }
+
+    // از هر canvas یک instance مجزا بساز
+    const r = new rive.Rive({
+      src,
+      canvas: el,
+      autoplay: true,
+      stateMachines: sm,
+      onLoad: () => {
+        r.resizeDrawingSurfaceToCanvas(); // شفافیت بهتر نسبت به سایز CSS
+      }
+    });
+
+    // کلیک مخصوص همین آیکن
+    el.addEventListener("click", () => {
+      const inputs = r.stateMachineInputs(sm) || [];
+      const trig   = inputs.find(i => i.name === clickInput);
+      if (!trig) return;
+      if (typeof trig.fire === "function") trig.fire();        // برای Trigger
+      else if ("value" in trig) trig.value = !trig.value;      // برای Bool
+    });
+
+    // واکنش به تغییر سایز
+    window.addEventListener("resize", () => r.resizeDrawingSurfaceToCanvas());
+  }
+
+  function initAll() {
+    document.querySelectorAll("canvas.rive-icon").forEach(initIcon);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initAll);
+  } else {
+    initAll();
+  }
+})();
+</script>
+
+    <canvas class="rive-icon" 
+            width="35" height="17.5"   
+            style="width: 35px; height: 17px; margin-right: 6px;  margin-top: 4px;"
+            data-rive="iq.riv">
+    </canvas>
+
+        
+      </a></li>
+      <li><a href="#" onclick="showPage('icons')" class="nav-link">Icons</a></li>
+      <li><a href="#" onclick="showPage('creator')" class="nav-link">Creator</a></li>
+      <li><a href="#" onclick="showPage('pricing')" class="nav-link">Pricing</a></li>
+      <li><a href="#" onclick="showPage('about')" class="nav-link">About</a></li>
+      <li><a href="#" onclick="showPage('contact')" class="nav-link">Contact</a></li>
+    </ul>
+    <div class="mobile-menu" onclick="openSidebar()">
+      <script src="https://unpkg.com/@rive-app/canvas"></script>
+                <canvas id="L" width="66" height="66"></canvas>
+                <script>
+                  const sh = new rive.Rive({
+                    src: 'three line.riv', // path to your file
+                    canvas: document.getElementById('L'),
+                    autoplay: true,
+                    stateMachines: ['State Machine 1'], // name from Rive editor
+                    onLoad: () => {
+                      const inputs = sh.stateMachineInputs('State Machine 1');
+                      const hoverInput = inputs.find(i => i.name === 'hover');
+                      const clickTrigger = inputs.find(i => i.name === 'clicked');
+                
+                      // Hover event
+                      document.getElementById('L').addEventListener('mouseenter', () => {
+                        hoverInput.value = true;
+                      });
+                      document.getElementById('L').addEventListener('mouseleave', () => {
+                        hoverInput.value = false;
+                      });
+                
+                      // Click event
+                      document.getElementById('L').addEventListener('click', () => {
+                        clickTrigger.fire();
+                      });
+                    }
+                  });
+                </script>
+                <script type="module" src="https://unpkg.com/@splinetool/viewer@1.10.57/build/spline-viewer.js" async></script>
+<spline-viewer loading-anim-type="spinner-small-dark" url="https://prod.spline.design/13v3Jw84peM0Fod7/scene.splinecode"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAxCAYAAAAsoQwQAAAEWElEQVR4AeyaWXYbOwxEfb0DD/vfqpJqH0oQmyDAHtQt2TkPjySGQgEl2fnI+/f396XY19fXpWWfn5+XJdbC6vmiHh8fH5diUW6vT4lFGKWXPaOabNxi2vv72xP9ASa28HNOjxf731WQy+Vy+GgQLxrinMwgZ5i3xfMqSCu41nfU0LCNaGvnX1I/CXLU4pYQjmogFiMzbyYn4rIk/r5341F84A0YngVI1Y3ysUQA+1x873GYviGLkZOFPQIeBDAtGHKnh2P9WR7ZPIu91f0hgoishpTpfoRle3t5wCa0PfwC/jBBSkMRkpX3WU5xkh3NJyUIbPPpsMOODA+kfnxZfHvv9VJMZvPrO1C7ht/qIYsKU4JEILN40tEjCFxFSMJN+dlc5fX6K76VjfQ5VBBvYMALTUsHprOVBLTcM192SZDDmzX471AP2f9r+r/NBRGBlmUZwXwBwCQAcAcDuP67xOohfpVr8+fSHmlBgJB0j0Qv5gED08K9uPUD9unel/BwwZzAmh5pQZzeQ+41RNUImASC2yl/MaBcDzvXzvhQQbSlmrB9w22hcH+H21s4xWDMX+oyJ7SxvVo7i5cT+YcEAZ/gFmRaZMHvWfLhlgO3e4k/0zkkyKMGg32WuteHZsu9HCJIdjFwLwxw9zvELgKwz6e9HyLIkm3BfOEw9y3BbtXAftitfvIBb8OCwLZEIY339sp/4GcPw4K88lLWzJb9MRz12EwQ+FE4avgX72/gHZh+UfbTflcUeOjAcOt3/YYADxMGGB54ix8JMN53mOjKgqsgK3EOKd9CpEOId5rOBIHzfIrqhettzc4lv30/630myBkGOXK58PgPpJ13JogN7iEOjA2c4WNz7H0P/ntjzgSJGu45sMWu7/ZtOY76be2Z7mWOO0GKcylR6H/6YR4f6anc2ixXxew7dT9RkvhPgugii7hlciKMKG576C6LahS3ed5deXuY7bcWf/d/SloIwvzbUWLRqYFlrTz5Za3YEt+WWEv6T9+QTOEaojAmhtdL/tpq7orXvtH3CMZIboZHSpBs02xeTaxVJ5+szu296/z63autY5naTE6NG71DQbJNvTzIfTu8evmt1QN5Mfnr3NG3MKypvn7Lt6V1BVHzTLNsXoQlHFkvT3FrrVzFR/yt3JbPw23lLvU1BVFjWQSqHFmUNxoXpmy0TvlL61R7BpsE0RDWMsSUv2VeC0s9Rq2FI59wdJ7dhv/aq8FkZx/M8jsjX3Fq2fQNseS9eyn24j2/anvxPWMjvZVrbQUvt7TgewmhIBGAB1z7I5wS984ar/e2GL28Eiv55V3O4rdniS05hRPVuYKoWBYBjMaF2bIIp1Xj+SKsEi/15Z05S43OTH7JyebfCaKiYgXoVU/NuXa2LTBqDtMvdQHL6uDfO96A9ibrZUZxW3v3DbGBV76PLOjRe/h1guwlhofr+T2hn0IQDVWbN9CRfnFc2//0gnhDev61Czm6/h8AAAD//3AUJtQAAAAGSURBVAMAQoubl5bBWo8AAAAASUVORK5CYII=" alt="Spline preview" style="width: 100%; height: 100%;"/></spline-viewer>
+    </div>
+  </nav>
+
+  <!-- Home Page -->
+  <section id="home" class="page-section active">
+    <div class="hero">
+      <div class="wrap">
+        <h1 class="animate-in">
+          <span class="animate-in">World's First</span>
+          <span class="highlight animate-in" data-text="Premium Icon">Premium Icon</span>
+          <span class="animate-in">Marketplace</span>
+        </h1>
+        
+        <p class="sub animate-in">
+          Discover exclusive, handcrafted icons that have never been seen before. Each icon is meticulously designed to elevate your projects with unique visual elements that set you apart from the competition.
+        </p>
+        
+        <div class="animate-in">
+          <button class="cta" onclick="showPage('icons')">Browse Icons</button>
+          <button class="cta cta-secondary" onclick="showModal('creator')">Start Creating</button>
+        </div>
+        
+        <!-- Icon Showcase -->
+        <div class="showcase">
+          <div class="card glow-container">
+            <div class="card-panel">
+              <div class="icon-grid">
+                <div class="icon-item">
+                  
+                  <canvas class="rive-icon" data-rive="cyrcle.riv" style="width: 140px; height: 70px;"></canvas>
+                </div>
+                <div class="icon-item">
+                  
+                  <canvas class="rive-icon" data-rive="tree line.riv" style="width: 140px; height: 70px;"></canvas>
+                </div>
+                <div class="icon-item">
+                  
+                  <canvas class="rive-icon" data-rive="setting.riv" style="width: 130px; height: 65px;"></canvas>
+                </div>
+                <div class="icon-item">
+                  
+                  <canvas class="rive-icon" data-rive="info-circle.riv" style="width: 130px; height: 65px;"></canvas>
+                </div>
+                <div class="icon-item">
+                  
+                  <canvas class="rive-icon" data-rive="calendar-grid.riv" style="width: 130px; height: 65px;"></canvas>
+                </div>
+                <div class="icon-item">
+                  
+                  <canvas class="rive-icon" data-rive="premium-star.riv" style="width: 130px; height: 65px;"></canvas>
+                </div>
+                <div class="icon-item">
+                  
+                  <canvas class="rive-icon" data-rive="circle-ring.riv" style="width: 130px; height: 65px;"></canvas>
+                </div>
+                <div class="icon-item">
+                  
+                  <canvas class="rive-icon" data-rive="square-frame.riv" style="width: 130px; height: 65px;"></canvas>
+                </div>
+              </div>
+              <p class="showcase-text">Premium icons crafted with precision and creativity</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="features">
+      <h2 class="section-title">Why Choose <span class="highlight" data-text="Iconique">Iconique</span>?</h2>
+      <p class="section-subtitle">Every icon tells a story. Every design pushes boundaries. Every creation is a world-first.</p>
+      
+      <div class="features-grid">
+        <div class="feature-card glow-container">
+          <div class="feature-icon">
+            <canvas class="rive-icon" data-rive="buble.riv" style="width: 150px; height: 75px;"></canvas>
+          </div>
+          <h3 class="feature-title">World-First Designs</h3>
+          <p class="feature-desc">Each icon is completely original and has never been created before. You're getting truly unique designs that no one else has.</p>
+        </div>
+        
+        <div class="feature-card glow-container">
+          <div class="feature-icon">
+            <canvas class="rive-icon" data-rive="flower.riv" style="width: 140px; height: 70px;"></canvas>
+          </div>
+          <h3 class="feature-title">Premium Quality</h3>
+          <p class="feature-desc">Meticulously crafted with attention to every pixel. Each icon is optimized for clarity at any size and perfect for professional use.</p>
+        </div>
+        
+        <div class="feature-card glow-container">
+          <div class="feature-icon">
+            <canvas class="rive-icon" data-rive="key.riv" style="width: 140px; height: 70px;"></canvas>
+          </div>
+          <h3 class="feature-title">Exclusive License</h3>
+          <p class="feature-desc">When you purchase an icon, you get exclusive rights to use it. No one else can buy or use the same design.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Icons Page -->
+  <section id="icons" class="page-section">
+    <div class="icons-page">
+      <h2 class="section-title">Browse <span class="highlight" data-text="Premium Icons">Premium Icons</span></h2>
+      <p class="section-subtitle">Discover unique, world-first icon designs crafted exclusively for your projects</p>
+      <!-- 1) لایبرری Rive (Canvas runtime) -->
+<script src="https://unpkg.com/@rive-app/canvas"></script>
+
+<script>
+(() => {
+  function initIcon(el) {
+    const src = search.rive;                         // مثلاً "home-icon.riv"
+    const sm  = search.sm || "State Machine 1";      // اسم State Machine (اختیاری)
+    const clickInput = el.dataset.inputClick || "click"; // اسم تریگر کلیک (اختیاری)
+
+    if (!src) {
+      console.warn("data-rive خالیه برای:", el);
+      return;
+    }
+
+    // از هر canvas یک instance مجزا بساز
+    const r = new rive.Rive({
+      src,
+      canvas: el,
+      autoplay: true,
+      stateMachines: sm,
+      onLoad: () => {
+        r.resizeDrawingSurfaceToCanvas(); // شفافیت بهتر نسبت به سایز CSS
+      }
+    });
+
+    // کلیک مخصوص همین آیکن
+    el.addEventListener("click", () => {
+      const inputs = r.stateMachineInputs(sm) || [];
+      const trig   = inputs.find(i => i.name === clickInput);
+      if (!trig) return;
+      if (typeof trig.fire === "function") trig.fire();        // برای Trigger
+      else if ("value" in trig) trig.value = !trig.value;      // برای Bool
+    });
+
+    // واکنش به تغییر سایز
+    window.addEventListener("resize", () => r.resizeDrawingSurfaceToCanvas());
+  }
+
+  function initAll() {
+    document.querySelectorAll("canvas.rive-icon").forEach(initIcon);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initAll);
+  } else {
+    initAll();
+  }
+})();
+</script>
+
+      <div class="search-bar">
+        <input type="text" class="search-input" placeholder="Search icons..." id="searchInput">
+        <button class="search-btn" onclick="searchIcons()">
+          <canvas class="rive-icon" data-rive="search.riv" style="width: 60px; height: 30px;"></canvas>
+      </div>
+
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="filterIcons('all')">All Icons</button>
+        <button class="filter-tab" onclick="filterIcons('business')">Business</button>
+        <button class="filter-tab" onclick="filterIcons('tech')">Technology</button>
+        <button class="filter-tab" onclick="filterIcons('design')">Design</button>
+        <button class="filter-tab" onclick="filterIcons('social')">Social</button>
+        <button class="filter-tab" onclick="filterIcons('Free')">Free</button>
+      </div>
+
+      <div class="icons-grid" id="iconsGrid">
+        <!-- Icons will be populated by JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Page -->
+  <section id="pricing" class="page-section">
+    <div class="pricing-page">
+      <h2 class="section-title">Choose Your <span class="highlight">Plan</span></h2>
+      <p class="section-subtitle">Flexible pricing options for creators and businesses of all sizes</p>
+      
+      <div class="pricing-grid">
+        <div class="pricing-card glow-container">
+          <h3 class="pricing-title">Starter</h3>
+          <div class="pricing-price">$29<span style="font-size: 18px; color: rgba(255,255,255,0.6);">/month</span></div>
+          <ul class="pricing-features">
+            <li>5 Icon Downloads per month</li>
+            <li>Standard License</li>
+            <li>Email Support</li>
+            <li>Basic Icon Formats</li>
+          </ul>
+          <button class="cta" onclick="showModal('purchase')">Get Started</button>
+        </div>
+        
+        <div class="pricing-card featured glow-container">
+          <h3 class="pricing-title">Professional</h3>
+          <div class="pricing-price">$79<span style="font-size: 18px; color: rgba(255,255,255,0.6);">/month</span></div>
+          <ul class="pricing-features">
+            <li>25 Icon Downloads per month</li>
+            <li>Extended License</li>
+            <li>Priority Support</li>
+            <li>All Icon Formats</li>
+            <li>Custom Icon Requests</li>
+          </ul>
+          <button class="cta" onclick="showModal('purchase')">Most Popular</button>
+        </div>
+        
+        <div class="pricing-card glow-container">
+          <h3 class="pricing-title">Enterprise</h3>
+          <div class="pricing-price">$199<span style="font-size: 18px; color: rgba(255,255,255,0.6);">/month</span></div>
+          <ul class="pricing-features">
+            <li>Unlimited Downloads</li>
+            <li>Commercial License</li>
+            <li>24/7 Phone Support</li>
+            <li>All Formats + Source Files</li>
+            <li>Custom Icon Creation</li>
+            <li>Brand Exclusivity Options</li>
+          </ul>
+          <button class="cta" onclick="showModal('purchase')">Contact Sales</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Page -->
+  <section id="about" class="page-section">
+    <div class="about-page">
+      <h2 class="section-title">About <span class="highlight">Iconique</span></h2>
+      <p class="section-subtitle">Pioneering the future of icon design with world-first creations</p>
+      
+      <div class="about-content">
+        <h3>Our Mission</h3>
+        <p>At Iconique, we believe that every digital experience deserves unique visual elements. That's why we've created the world's first marketplace dedicated exclusively to never-before-seen icon designs. Each icon in our collection is a world-first creation, ensuring that your projects stand out with truly original visual elements.</p>
+        
+        <h3>What Makes Us Different</h3>
+        <p>Unlike traditional icon libraries that recycle common designs, every Iconique icon is completely original and exclusive. When you purchase an icon from us, you're not just buying a design – you're acquiring a piece of digital art that has never existed before and will never be sold to anyone else.</p>
+        
+        <h3>Quality Guarantee</h3>
+        <p>Every icon undergoes rigorous quality control to ensure pixel-perfect precision, scalability, and professional-grade aesthetics. Our designers are carefully selected masters of their craft, bringing years of experience and innovative thinking to every creation.</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="stat-number">500+</span>
+          <div class="stat-label">Unique Icons Created</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">1,200+</span>
+          <div class="stat-label">Happy Customers</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">100%</span>
+          <div class="stat-label">Original Designs</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">24/7</span>
+          <div class="stat-label">Support Available</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Creator Page -->
+  <section id="creator" class="page-section">
+    <div class="creator-page">
+      <h2 class="section-title">Join Our <span class="highlight">Creator Program</span></h2>
+      <p class="section-subtitle">Turn your creativity into income by designing world-first icons for our exclusive marketplace</p>
+      
+      <div class="creator-hero">
+        <div class="creator-stats">
+          <div class="creator-stat">
+            <span class="stat-number">$2,500</span>
+            <div class="stat-label">Average Monthly Earnings</div>
+          </div>
+          <div class="creator-stat">
+            <span class="stat-number">70%</span>
+            <div class="stat-label">Revenue Share</div>
+          </div>
+          <div class="creator-stat">
+            <span class="stat-number">24h</span>
+            <div class="stat-label">Approval Time</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="creator-benefits">
+        <h3 class="section-title" style="font-size: 36px; margin-bottom: 40px;">Why Create With Us?</h3>
+        <div class="benefits-grid">
+          <div class="benefit-card">
+            <div class="benefit-icon1"> <script src="https://unpkg.com/@rive-app/canvas"></script>
+                <canvas id="iq" width="95" height="95"></canvas>
+                <script>
+                  const iq = new rive.Rive({
+                    src: 'money.riv', // path to your file
+                    canvas: document.getElementById('iq'),
+                    autoplay: true,
+                    stateMachines: ['State Machine 1'], // name from Rive editor
+                    onLoad: () => {
+                      const inputs = iq.stateMachineInputs('State Machine 1');
+                      const hoverInput = inputs.find(i => i.name === 'hover');
+                      const clickTrigger = inputs.find(i => i.name === 'clicked');
+                
+                      // Hover event
+                      document.getElementById('iq').addEventListener('mouseenter', () => {
+                        hoverInput.value = true;
+                      });
+                      document.getElementById('iq').addEventListener('mouseleave', () => {
+                        hoverInput.value = false;
+                      });
+                
+                      // Click event
+                      document.getElementById('iq').addEventListener('click', () => {
+                        clickTrigger.fire();
+                      });
+                    }
+                  });
+                </script></div>
+            <h4>High Revenue Share</h4>
+            <p>Earn 70% on every icon sale - one of the highest rates in the industry</p>
+          </div>
+          <div class="benefit-card">
+
+                 <script src="https://unpkg.com/@rive-app/canvas"></script>
+                <canvas id="bols eye" width="110" height="110"></canvas>
+                <script>
+                  const bolseye = new rive.Rive({
+                    src: 'bols eye.riv', // path to your file
+                    canvas: document.getElementById('bols eye'),
+                    autoplay: true,
+                    stateMachines: ['State Machine 1'], // name from Rive editor
+                    onLoad: () => {
+                      const inputs = eye.stateMachineInputs('State Machine 1');
+                      const hoverInput = inputs.find(i => i.name === 'hover');
+                      const clickTrigger = inputs.find(i => i.name === 'clicked');
+                
+                      // Hover event
+                      document.getElementById('money').addEventListener('mouseenter', () => {
+                        hoverInput.value = true;
+                      });
+                      document.getElementById('money').addEventListener('mouseleave', () => {
+                        hoverInput.value = false;
+                      });
+                
+                      // Click event
+                      document.getElementById('money').addEventListener('click', () => {
+                        clickTrigger.fire();
+                      });
+                    }
+                  });
+                </script>
+            <h4>Exclusive Market</h4>
+            <p>Your icons are sold exclusively - no competition from duplicate designs</p>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon"><script src="https://unpkg.com/@rive-app/canvas"></script>
+                <canvas id="farid" width="120" height="120"></canvas>
+                <script>
+                  const shayann = new rive.Rive({
+                    src: 'flash.riv', // path to your file
+                    canvas: document.getElementById('farid'),
+                    autoplay: true,
+                    stateMachines: ['State Machine 1'], // name from Rive editor
+                    onLoad: () => {
+                      const inputs = shayann.stateMachineInputs('State Machine 1');
+                      const hoverInput = inputs.find(i => i.name === 'hover');
+                      const clickTrigger = inputs.find(i => i.name === 'clicked');
+                
+                      // Hover event
+                      document.getElementById('farid').addEventListener('mouseenter', () => {
+                        hoverInput.value = true;
+                      });
+                      document.getElementById('farid').addEventListener('mouseleave', () => {
+                        hoverInput.value = false;
+                      });
+                      // Click event
+                      document.getElementById('farid').addEventListener('click', () => {
+                        clickTrigger.fire();
+                      });
+                    }
+                  });
+                </script></div>
+            <h4>Fast Approval</h4>
+            <p>Your icons are sold exclusively - no competition from duplicate designs</p>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon1">  <script src="https://unpkg.com/@rive-app/canvas"></script>
+                <canvas id="improve" width="100" height="100"></canvas>
+                <script>
+                  const improve = new rive.Rive({
+                    src: 'improve.riv', // path to your file
+                    canvas: document.getElementById('improve'),
+                    autoplay: true,
+                    stateMachines: ['State Machine 1'], // name from Rive editor
+                    onLoad: () => {
+                      const inputs = improve.stateMachineInputs('State Machine 1');
+                      const hoverInput = inputs.find(i => i.name === 'hover');
+                      const clickTrigger = inputs.find(i => i.name === 'clicked');
+                
+                      // Hover event
+                      document.getElementById('improve').addEventListener('mouseenter', () => {
+                        hoverInput.value = true;
+                      });
+                      document.getElementById('improve').addEventListener('mouseleave', () => {
+                        hoverInput.value = false;
+                      });
+                
+                      // Click event
+                      document.getElementById('improve').addEventListener('click', () => {
+                        clickTrigger.fire();
+                      });
+                    }
+                  });
+                </script></div>
+            <h4>Marketing Support</h4>
+            <p>We promote your work across our platform and social channels</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="creator-application">
+        <h3 class="section-title" style="font-size: 36px; margin-bottom: 20px;">Apply Now</h3>
+        <p class="section-subtitle" style="margin-bottom: 40px;">Ready to start earning? Submit your application and portfolio</p>
+        
+        <form class="application-form" onsubmit="submitApplication(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-input" placeholder="Your full name" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-input" placeholder="your@email.com" required>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Portfolio URL</label>
+              <input type="url" class="form-input" placeholder="https://yourportfolio.com" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Years of Experience</label>
+              <select class="form-input" required>
+                <option value="">Select experience</option>
+                <option value="1-2">1-2 years</option>
+                <option value="3-5">3-5 years</option>
+                <option value="5+">5+ years</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Design Specialties</label>
+            <div class="checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" name="specialty" value="business"> Business Icons
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="specialty" value="tech"> Technology Icons
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="specialty" value="social"> Social Media Icons
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="specialty" value="design"> Design & Creative
+              </label>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Tell us about yourself</label>
+            <textarea class="form-textarea" placeholder="What makes your design style unique? What's your creative process?" required></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Sample Work Upload</label>
+            <div class="file-upload" onclick="document.getElementById('fileInput').click()">
+              <input type="file" id="fileInput" accept=".svg,.png,.jpg,.pdf" multiple style="display: none;">
+              <div class="upload-content">
+                <span class="upload-icon">📁</span>
+                <p>Click to upload your best 3-5 icon designs</p>
+                <small>SVG, PNG, JPG or PDF files</small>
+              </div>
+            </div>
+          </div>
+          
+          <button type="submit" class="cta" style="width: 100%; margin: 30px 0 0 0;">Submit Application</button>
+        </form>
+      </div>
+
+      <div class="creator-faq">
+        <h3 class="section-title" style="font-size: 36px; margin-bottom: 40px;">Frequently Asked Questions</h3>
+        <div class="faq-grid">
+          <div class="faq-item">
+            <h4>How much can I earn?</h4>
+            <p>Top creators earn $3,000-$8,000 monthly. Your earnings depend on the quality and demand for your designs.</p>
+          </div>
+          <div class="faq-item">
+            <h4>What file formats do you accept?</h4>
+            <p>We accept SVG files as the primary format, with PNG exports for preview. All icons must be scalable vector graphics.</p>
+          </div>
+          <div class="faq-item">
+            <h4>How often do I get paid?</h4>
+            <p>Payments are processed monthly via PayPal or bank transfer, with detailed earnings reports.</p>
+          </div>
+          <div class="faq-item">
+            <h4>Can I sell my icons elsewhere?</h4>
+            <p>Icons submitted to Iconique must be exclusive to our platform to maintain the uniqueness of our marketplace.</p>
+            </div>
+          <div class="faq-item">
+            <h4>How are prices set?</h4>
+            <p>You choose the price within our marketplace range. Our team may suggest adjustments to match quality and demand</p>
+            </div>
+          <div class="faq-item">
+            <h4>Do you support dark/light mode previews?</h4>
+            <p>no.we support only dark mode icons.</p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Page -->
+  <section id="contact" class="page-section">
+    <div class="contact-page">
+      <h2 class="section-title">Get In <span class="highlight">Touch</span></h2>
+      <p class="section-subtitle">Have questions? Want to collaborate? We'd love to hear from you.</p>
+      
+      <form class="contact-form" onsubmit="submitContact(event)">
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <input type="text" class="form-input" placeholder="Your full name" required>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" placeholder="your@email.com" required>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Subject</label>
+          <input type="text" class="form-input" placeholder="What's this about?" required>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Message</label>
+          <textarea class="form-textarea" placeholder="Tell us more about your project or question..." required></textarea>
+        </div>
+        
+        <button type="submit" class="cta" style="width: 100%; margin: 20px 0 0 0;">Send Message</button>
+      </form>
+    </div>
+  </section>
+
+ 
+    
+    <div class="footer-bottom">
+      <p>&copy; 2024 Iconique. All rights reserved. Every icon is a world-first creation.</p>
+    </div>
+  </footer>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <div id="modalContent">
+        <!-- Modal content will be populated by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sample icon data with Rive files
+    const iconData = [
+      { id: 1, name: 'Shield Pro', price: 15, category: 'business', rive: 'star.riv' },
+      { id: 2, name: 'Star Burst', price: 25, category: 'design', rive: 'text.riv' },
+      { id: 3, name: 'Info Circle', price: 18, category: 'tech', rive: 'info-circle.riv' },
+      { id: 4, name: 'Calendar Grid', price: 22, category: 'business', rive: 'calendar-grid.riv' },
+      { id: 5, name: 'Premium Star', price: 30, category: 'design', rive: 'premium-star.riv' },
+      { id: 6, name: 'Circle Ring', price: 16, category: 'tech', rive: 'circle-ring.riv' },
+      { id: 7, name: 'Square Frame', price: 24, category: 'design', rive: 'square-frame.riv' },
+      { id: 8, name: 'Heart Connect', price: 28, category: 'social', rive: 'heart-connect.riv' },
+      { id: 9, name: 'Message Bubble', price: 20, category: 'social', rive: 'message-bubble.riv' },
+      { id: 10, name: 'Lock Secure', price: 26, category: 'business', rive: 'lock-secure.riv' },
+      { id: 11, name: 'Rocket Launch', price: 32, category: 'tech', rive: 'rocket-launch.riv' },
+      { id: 12, name: 'Globe Network', price: 35, category: 'tech', rive: 'globe-network.riv' },
+      { id: 13, name: 'cyrcle', price: 35, category: 'Free', rive: 'cyrcle.riv' },
+      { id: 14, name: 'three line', price: 35, category: 'Free', rive: 'tree line.riv' },
+    ];
+
+    let currentFilter = 'all';
+    let currentPage = 'home';
+
+    // Sidebar functions
+    let sidebarTimeout;
+    
+    function openSidebar() {
+      clearTimeout(sidebarTimeout);
+      document.getElementById('sidebar').classList.add('active');
+      document.getElementById('sidebarOverlay').classList.add('active');
+    }
+
+    function closeSidebar() {
+      document.getElementById('sidebar').classList.remove('active');
+      document.getElementById('sidebarOverlay').classList.remove('active');
+    }
+    
+    function scheduleCloseSidebar() {
+      sidebarTimeout = setTimeout(() => {
+        closeSidebar();
+      }, 300);
+    }
+
+    // Navigation functions
+    function showPage(page) {
+      if (currentPage === page) return;
+      
+      // Add exiting class to current page
+      const currentSection = document.getElementById(currentPage);
+      if (currentSection) {
+        currentSection.classList.add('exiting');
+      }
+      
+      // Update navigation immediately
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+      });
+      document.querySelector(`[onclick="showPage('${page}')"]`).classList.add('active');
+      
+      // Determine animation direction based on page order
+      const pageOrder = ['home', 'icons', 'creator', 'pricing', 'about', 'contact'];
+      const currentIndex = pageOrder.indexOf(currentPage);
+      const newIndex = pageOrder.indexOf(page);
+      
+      let animationClass = 'page-fade-up';
+      if (newIndex > currentIndex) {
+        animationClass = 'page-slide-left';
+      } else if (newIndex < currentIndex) {
+        animationClass = 'page-slide-right';
+      }
+      
+      // After exit animation, show new page
+      setTimeout(() => {
+        // Hide all pages
+        document.querySelectorAll('.page-section').forEach(section => {
+          section.classList.remove('active', 'exiting', 'page-slide-left', 'page-slide-right', 'page-fade-up');
+        });
+        
+        // Show selected page with animation
+        const newSection = document.getElementById(page);
+        newSection.classList.add('active', animationClass);
+        
+        currentPage = page;
+        
+        // Load page-specific content
+        if (page === 'icons') {
+          loadIcons();
+        }
+        
+        // Start counters for pages with statistics
+        if (['about', 'creator'].includes(page)) {
+          startCounters(page);
+        }
+      }, 200);
+      
+      // Close mobile menu if open
+      document.getElementById('navLinks').classList.remove('active');
+    }
+
+    
+
+    // Icons page functions
+    function loadIcons() {
+      const grid = document.getElementById('iconsGrid');
+      const filteredIcons = currentFilter === 'all' ? iconData : iconData.filter(icon => icon.category === currentFilter);
+      
+      // Clear grid with fade out
+      grid.style.opacity = '0';
+      grid.style.transform = 'translateY(20px)';
+      
+      setTimeout(() => {
+        if (filteredIcons.length === 0) {
+          // Show empty state with Rive animation
+          grid.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-icon">
+              <canvas class="rive-icon" data-rive="dron.riv" width="600" height="300"></canvas>
+
+              </div>
+              <h3>No Icons Found</h3>
+              <p>We couldn't find any icons matching your search criteria. Try adjusting your filters or search terms.</p>
+              <button class="empty-state-btn" onclick="clearSearch()">Clear Search</button>
+            </div>
+            
+          `;
+        } else {
+          grid.innerHTML = filteredIcons.map((icon, index) => `
+            <div class="icon-card" onclick="purchaseIcon(${icon.id})" style="animation-delay: ${0.1 + (index * 0.05)}s;">
+              <div class="icon-card-icon">
+                <canvas class="rive-icon" data-rive="${icon.rive}" style="width: 130px; height: 65px;"></canvas>
+              </div>
+              <h3 class="icon-card-title">${icon.name}</h3>
+              <div class="icon-card-price">$${icon.price}</div>
+              <button class="icon-card-btn">Purchase Now</button>
+            </div>
+          `).join('');
+        }
+        
+        // Fade in with new content
+        grid.style.opacity = '1';
+        grid.style.transform = 'translateY(0)';
+        grid.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+        
+        // Initialize Rive animations for newly loaded icons
+        setTimeout(() => initializeRiveAnimations(), 100);
+      }, 300);
+    }
+
+    function filterIcons(category) {
+      currentFilter = category;
+      
+      // Update filter tabs with animation
+      document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      loadIcons();
+    }
+
+    function searchIcons() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const grid = document.getElementById('iconsGrid');
+      
+      let filteredIcons = iconData.filter(icon => 
+        icon.name.toLowerCase().includes(searchTerm) || 
+        icon.category.toLowerCase().includes(searchTerm)
+      );
+      
+      if (currentFilter !== 'all') {
+        filteredIcons = filteredIcons.filter(icon => icon.category === currentFilter);
+      }
+      
+      // Clear grid with fade out
+      grid.style.opacity = '0';
+      grid.style.transform = 'translateY(20px)';
+      
+      setTimeout(() => {
+        if (filteredIcons.length === 0) {
+          // Show empty state with Rive animation
+          grid.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-icon">
+              <canvas class="rive-icon" data-rive="dron.riv" width="600" height="300"></canvas>
+
+              </div>
+              <h3>No Icons Found</h3>
+              <p>We couldn't find any icons matching "${searchTerm}". Try different keywords or browse our categories.</p>
+              <button class="empty-state-btn" onclick="clearSearch()">Clear Search</button>
+            </div>
+            
+
+          `;
+        } else {
+          grid.innerHTML = filteredIcons.map((icon, index) => `
+            <div class="icon-card" onclick="purchaseIcon(${icon.id})" style="animation-delay: ${0.1 + (index * 0.05)}s;">
+              <div class="icon-card-icon">
+                <canvas class="rive-icon" data-rive="${icon.rive}" style="width: 130px; height: 65px;"></canvas>
+              </div>
+              <h3 class="icon-card-title">${icon.name}</h3>
+              <div class="icon-card-price">$${icon.price}</div>
+              <button class="icon-card-btn">Purchase Now</button>
+            </div>
+          `).join('');
+        }
+        
+        // Fade in with new content
+        grid.style.opacity = '1';
+        grid.style.transform = 'translateY(0)';
+        grid.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+        
+        // Initialize Rive animations for search results
+        setTimeout(() => initializeRiveAnimations(), 100);
+      }, 200);
+    }
+
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      currentFilter = 'all';
+      
+      // Reset filter tabs
+      document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelector('.filter-tab').classList.add('active');
+      
+      loadIcons();
+    }
+
+    // Modal functions
+    function showModal(type) {
+      const modal = document.getElementById('modal');
+      const content = document.getElementById('modalContent');
+      
+      let modalHTML = '';
+      
+      switch(type) {
+        case 'creator':
+          modalHTML = `
+            <h3 style="margin-bottom: 20px; color: var(--primary-blue);">Creator Dashboard</h3>
+            <p style="margin-bottom: 20px; color: rgba(255,255,255,0.8);">Ready to start creating world-first icons? Our creator platform is launching soon!</p>
+            <div style="margin-bottom: 20px;">
+              <input type="email" placeholder="Enter your email for early access" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(15,25,35,0.8); color: white; margin-bottom: 15px;">
+              <button class="cta" style="width: 100%; margin: 0;">Join Waitlist</button>
+            </div>
+             
+
+          `;
+          break;
+        case 'purchase':
+          modalHTML = `
+            <h3 style="margin-bottom: 20px; color: var(--primary-blue);">Purchase Plan</h3>
+            <p style="margin-bottom: 20px; color: rgba(255,255,255,0.8);">Ready to access our premium icon library? Contact us to set up your account!</p>
+            <button class="cta" style="width: 100%; margin: 10px 0;" onclick="showPage('contact'); closeModal();">Contact Sales</button>
+            <button class="cta cta-secondary" style="width: 100%; margin: 10px 0;" onclick="closeModal();">Maybe Later</button>
+          `;
+          break;
+        case 'help':
+          modalHTML = `
+            <h3 style="margin-bottom: 20px; color: var(--primary-blue);">Help Center</h3>
+            <div style="text-align: left; color: rgba(255,255,255,0.8);">
+              <h4 style="color: white; margin: 15px 0 10px;">Frequently Asked Questions</h4>
+              <p><strong>Q: Are the icons really world-first?</strong><br>A: Yes! Every icon is completely original and exclusive.</p>
+              <p><strong>Q: What formats do you provide?</strong><br>A: gif, PNG SEQ, and source files for premium plans.</p>
+              <p><strong>Q: Can I request custom icons?</strong><br>A: Yes, with Professional and Enterprise plans.</p>
+              <p><strong>Q: do you guys have free icons?</strong><br>A: Yes, you can see the Free section in the icons page.</p>
+            </div>
+          `;
+          break;
+        case 'license':
+          modalHTML = `
+            <h3 style="margin-bottom: 20px; color: var(--primary-blue);">License Terms</h3>
+            <div style="text-align: left; color: rgba(255,255,255,0.8); max-height: 300px; overflow-y: auto;">
+              <h4 style="color: white;">Standard License</h4>
+              <p>• Use in personal and commercial projects</p>
+              <p>• Modify and customize as needed</p>
+              <p>• No resale or redistribution</p>
+              <h4 style="color: white; margin-top: 20px;">Extended License</h4>
+              <p>• All Standard License rights</p>
+              <p>• Use in products for sale</p>
+              <p>• Team sharing allowed</p>
+            </div>
+          `;
+          break;
+        case 'privacy':
+          modalHTML = `
+            <h3 style="margin-bottom: 20px; color: var(--primary-blue);">Privacy Policy</h3>
+            <div style="text-align: left; color: rgba(255,255,255,0.8); max-height: 300px; overflow-y: auto;">
+              <p>We respect your privacy and protect your personal information.</p>
+              <h4 style="color: white; margin: 15px 0 10px;">Data Collection</h4>
+              <p>We only collect necessary information for account management and purchases.</p>
+              <h4 style="color: white; margin: 15px 0 10px;">Data Usage</h4>
+              <p>Your data is used solely for providing our services and improving user experience.</p>
+            </div>
+          `;
+          break;
+      }
+      
+      content.innerHTML = modalHTML;
+      modal.classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+    }
+
+    function purchaseIcon(iconId) {
+      const icon = iconData.find(i => i.id === iconId);
+      showModal('purchase');
+    }
+
+    // Form submission
+    function submitContact(event) {
+      event.preventDefault();
+      alert('Thank you for your message! We\'ll get back to you within 24 hours.');
+      event.target.reset();
+    }
+
+    function submitApplication(event) {
+      event.preventDefault();
+      
+      // Get selected specialties
+      const specialties = Array.from(document.querySelectorAll('input[name="specialty"]:checked'))
+        .map(cb => cb.value);
+      
+      if (specialties.length === 0) {
+        alert('Please select at least one design specialty.');
+        return;
+      }
+      
+      // Simulate file upload check
+      const fileInput = document.getElementById('fileInput');
+      if (!fileInput.files.length) {
+        alert('Please upload at least one sample of your work.');
+        return;
+      }
+      
+      // Show success message
+      alert('Thank you for your application! We\'ll review your portfolio and get back to you within 48 hours. Keep an eye on your email for updates.');
+      event.target.reset();
+      
+      // Reset file upload display
+      document.querySelector('.upload-content p').textContent = 'Click to upload your best 3-5 icon designs';
+    }
+
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+      const navbar = document.getElementById('navbar');
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+        navbar.classList.remove('at-top');
+      } else {
+        navbar.classList.remove('scrolled');
+        navbar.classList.add('at-top');
+      }
+    });
+
+    // Close modal when clicking outside
+    document.getElementById('modal').addEventListener('click', (e) => {
+      if (e.target.id === 'modal') {
+        closeModal();
+      }
+    });
+
+    // File upload handling
+    document.addEventListener('DOMContentLoaded', () => {
+      loadIcons();
+      
+      // Handle file upload display
+      const fileInput = document.getElementById('fileInput');
+      if (fileInput) {
+        fileInput.addEventListener('change', function() {
+          const uploadText = document.querySelector('.upload-content p');
+          if (this.files.length > 0) {
+            uploadText.textContent = `${this.files.length} file(s) selected`;
+          } else {
+            uploadText.textContent = 'Click to upload your best 3-5 icon designs';
+          }
+        });
+      }
+    });
+
+    // Search on Enter key
+    document.getElementById('searchInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        searchIcons();
+      }
+    });
+
+    // Animated counter function
+    function animateCounter(element, target, duration = 2000) {
+      const start = 1;
+      const increment = (target - start) / (duration / 16);
+      let current = start;
+      
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          current = target;
+          clearInterval(timer);
+        }
+        
+        // Format the number based on the target
+        let displayValue;
+        if (target >= 1000) {
+          displayValue = Math.floor(current).toLocaleString() + '+';
+        } else if (target === 100) {
+          displayValue = Math.floor(current) + '%';
+        } else if (target === 24) {
+          displayValue = Math.floor(current) + 'h';
+        } else if (target === 70) {
+          displayValue = Math.floor(current) + '%';
+        } else if (target >= 2000) {
+          displayValue = '$' + Math.floor(current).toLocaleString();
+        } else {
+          displayValue = Math.floor(current);
+        }
+        
+        element.textContent = displayValue;
+      }, 16);
+    }
+
+    // Start counters when page becomes visible
+    function startCounters(pageId) {
+      setTimeout(() => {
+        const page = document.getElementById(pageId);
+        if (!page || !page.classList.contains('active')) return;
+        
+        const counters = page.querySelectorAll('.stat-number');
+        counters.forEach(counter => {
+          const text = counter.textContent;
+          let target;
+          
+          // Extract target number from text
+          if (text.includes('$')) {
+            target = parseInt(text.replace(/[$,]/g, ''));
+          } else if (text.includes('%')) {
+            target = parseInt(text.replace('%', ''));
+          } else if (text.includes('h')) {
+            target = parseInt(text.replace('h', ''));
+          } else if (text.includes('+')) {
+            target = parseInt(text.replace(/[+,]/g, ''));
+          } else {
+            target = parseInt(text);
+          }
+          
+          if (!isNaN(target)) {
+            counter.textContent = '1';
+            animateCounter(counter, target);
+          }
+        });
+      }, 300);
+    }
+
+    // Scroll animations
+    function setupScrollAnimations() {
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate');
+          }
+        });
+      }, observerOptions);
+
+      // Observe elements for animation
+      const animateElements = document.querySelectorAll('.section-title, .section-subtitle, .feature-card');
+      animateElements.forEach(el => observer.observe(el));
+    }
+
+    // Rive animation initialization
+    function initializeRiveAnimations() {
+      const riveElements = document.querySelectorAll('.rive-icon:not([data-initialized])');
+      
+      riveElements.forEach(canvas => {
+        const riveFile = canvas.getAttribute('data-rive');
+        if (!riveFile) return;
+        
+        try {
+          // Create Rive instance with auto-play
+          const r = new rive.Rive({
+            src: riveFile,
+            canvas: canvas,
+            autoplay: true,
+            stateMachines: 'State Machine 1', // Default state machine name
+            onLoad: () => {
+              // Animation loaded successfully
+              canvas.setAttribute('data-initialized', 'true');
+            },
+            onLoadError: (err) => {
+              // If Rive file doesn't exist, show a placeholder
+              console.log(`Rive file ${riveFile} not found - showing placeholder`);
+              canvas.style.background = 'linear-gradient(135deg, rgba(46,161,255,0.3), rgba(14,108,255,0.2))';
+              canvas.style.borderRadius = '8px';
+              canvas.setAttribute('data-initialized', 'true');
+            }
+          });
+        } catch (error) {
+          // Fallback for any initialization errors
+          console.log(`Error initializing ${riveFile}:`, error);
+          canvas.style.background = 'linear-gradient(135deg, rgba(46,161,255,0.3), rgba(14,108,255,0.2))';
+          canvas.style.borderRadius = '8px';
+          canvas.setAttribute('data-initialized', 'true');
+        }
+      });
+    }
+
+    // Force scroll to top on page load/refresh
+    function forceScrollToTop() {
+      // Immediately scroll to top
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      
+      // Also ensure we're on home page
+      showPage('home');
+      
+      // Force scroll again after a brief delay to ensure it works
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      }, 10);
+    }
+
+    // Scroll animations
+    function setupScrollAnimations() {
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate');
+          }
+        });
+      }, observerOptions);
+
+      // Observe elements for animation
+      const animateElements = document.querySelectorAll('.section-title, .section-subtitle, .feature-card');
+      animateElements.forEach(el => observer.observe(el));
+    }
+
+    // Cursor glow effect
+    document.addEventListener('DOMContentLoaded', () => {
+      // Force scroll to top on page load
+      forceScrollToTop();
+      
+      // Initialize Rive animations
+      setTimeout(() => initializeRiveAnimations(), 500);
+      
+      // Track all elements with glow effects
+      const glowElements = document.querySelectorAll('.glow-container, .feature-card, .icon-card, .pricing-card, .stat-item, .creator-stat, .benefit-card, .faq-item, .contact-form, .application-form');
+      
+      glowElements.forEach(element => {
+        element.addEventListener('mousemove', (e) => {
+          const rect = element.getBoundingClientRect();
+          const x = ((e.clientX - rect.left) / rect.width) * 100;
+          const y = ((e.clientY - rect.top) / rect.height) * 100;
+          
+          element.style.setProperty('--mouse-x', `${x}%`);
+          element.style.setProperty('--mouse-y', `${y}%`);
+        });
+      });
+
+      // Special cursor tracking for the main showcase card
+      const showcaseCard = document.querySelector('.card .card-panel');
+      if (showcaseCard) {
+        showcaseCard.addEventListener('mousemove', (e) => {
+          const rect = showcaseCard.getBoundingClientRect();
+          const x = ((e.clientX - rect.left) / rect.width) * 100;
+          const y = ((e.clientY - rect.top) / rect.height) * 100;
+          
+          showcaseCard.style.setProperty('--mouse-x', `${x}%`);
+          showcaseCard.style.setProperty('--mouse-y', `${y}%`);
+        });
+      }
+      
+      // Setup scroll animations
+      setupScrollAnimations();
+      
+      // Start counters for home page on load
+      startCounters('home');
+    });
+
+    // Force scroll to top on page refresh/reload
+    window.addEventListener('beforeunload', () => {
+      window.scrollTo(0, 0);
+    });
+
+    // Additional scroll to top enforcement
+    if (history.scrollRestoration) {
+      history.scrollRestoration = 'manual';
+    }
+  </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9723ae44c0a214a8',t:'MTc1NTcxMTY3OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
